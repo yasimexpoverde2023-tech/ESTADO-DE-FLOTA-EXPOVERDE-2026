@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Flota</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 20px;
+}
+
+.overlay {
+  background: rgba(255,255,255,0.92);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 10px auto;
+  max-width: 150px;
+}
+
+.container {
+  max-width: 1400px;
+  margin: auto;
+}
+
+.kpis {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.kpi {
+  flex: 1;
+  background: #1f2937;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+select, button {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background: #ef4444;
+  color: white;
+  cursor: pointer;
+}
+
+.table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #1f2937;
+  color: white;
+  padding: 10px;
+}
+
+td {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover { background: #f9fafb; }
+
+.disponible { background-color: #d1fae5; }
+.vacio { background-color: #fee2e2; }
+.ocupado { background-color: #dbeafe; }
+
+.leyenda {
+  margin-top: 10px;
+  display: flex;
+  gap: 15px;
+}
+
+.leyenda div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.caja {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+}
+
+</style>
+</head>
+
+<body>
+<div class="container overlay">
+
+<img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg">
+
+<h1>ESTADO DE FLOTA - EXPOVERDE 2026</h1>
+
+<div class="kpis">
+  <div class="kpi" id="kpiTotal">Total: 0</div>
+  <div class="kpi" id="kpiDisponibles">Disponibles: 0</div>
+  <div class="kpi" id="kpiVacios">Vacíos: 0</div>
+</div>
+
+<div class="filtros" id="filtros"></div>
+<button onclick="limpiarFiltros()">Limpiar filtros</button>
+
+<div class="table-container">
+<table>
+<thead id="thead"></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="leyenda">
+  <div><div class="caja disponible"></div> Disponible</div>
+  <div><div class="caja vacio"></div> Vacío</div>
+  <div><div class="caja ocupado"></div> Ocupado</div>
+</div>
+
+</div>
+
+<script>
+const url = "https://docs.google.com/spreadsheets/d/1gvbQtOUJoM64tOn4uUBTI0cvpFa8EHOU/export?format=csv&gid=855031501";
+
+let datos = [];
+let columnas = [];
+let filtrosActivos = {};
+
+async function cargar() {
+  const res = await fetch(url);
+  const text = await res.text();
+
+  const filas = text.split("\n").map(f => f.split(","));
+
+  columnas = filas[0].map(c => c.trim());
+
+  datos = filas.slice(1).map(fila => {
+    let obj = {};
+    columnas.forEach((col, i) => obj[col] = fila[i]);
+    return obj;
+  });
+
+  columnas.forEach(col => filtrosActivos[col] = "");
+
+  crearFiltros();
+  aplicarFiltros();
+}
+
+function crearFiltros() {
+  const cont = document.getElementById("filtros");
+  cont.innerHTML = "";
+
+  columnas.forEach(col => {
+    const select = document.createElement("select");
+
+    const valores = [...new Set(datos.map(d => d[col]).filter(v => v))];
+
+    select.innerHTML = `<option value="">${col}</option>` +
+      valores.map(v => `<option value="${v}">${v}</option>`).join("");
+
+    select.onchange = () => {
+      filtrosActivos[col] = select.value;
+      aplicarFiltros();
+    };
+
+    cont.appendChild(select);
+  });
+}
+
+function aplicarFiltros() {
+  let filtrados = datos;
+
+  Object.keys(filtrosActivos).forEach(col => {
+    const val = filtrosActivos[col];
+    if (val) filtrados = filtrados.filter(d => d[col] === val);
+  });
+
+  actualizarKPIs(filtrados);
+  render(filtrados);
+}
+
+function actualizarKPIs(data) {
+  document.getElementById("kpiTotal").innerText = `Total: ${data.length}`;
+
+  const disponibles = data.filter(d => (d["CLIENTE"]||"").includes("DISPONIBLE")).length;
+  const vacios = data.filter(d => (d["CLIENTE"]||"").includes("VACIO")).length;
+
+  document.getElementById("kpiDisponibles").innerText = `Disponibles: ${disponibles}`;
+  document.getElementById("kpiVacios").innerText = `Vacíos: ${vacios}`;
+}
+
+function limpiarFiltros() {
+  Object.keys(filtrosActivos).forEach(k => filtrosActivos[k] = "");
+  crearFiltros();
+  aplicarFiltros();
+}
+
+function render(data) {
+  document.getElementById("thead").innerHTML =
+    "<tr>" + columnas.map(c => `<th>${c}</th>`).join("") + "</tr>";
+
+  document.getElementById("tbody").innerHTML =
+    data.map(row => {
+      let clase = "ocupado";
+
+      if ((row["CLIENTE"]||"").includes("DISPONIBLE")) clase = "disponible";
+      else if ((row["CLIENTE"]||"").includes("VACIO")) clase = "vacio";
+
+      return "<tr class='" + clase + "'>" +
+        columnas.map(c => `<td>${row[c] || ""}</td>`).join("") +
+        "</tr>";
+    }).join("");
+}
+
+cargar();
+</script>
+
+</body>
+</html>
