@@ -128,7 +128,8 @@ td {
 tr:hover { background: #f9fafb; }
 .disponible td { background-color: #d1fae5; }
 .vacio td { background-color: #fee2e2; }
-.ocupado td { background-color: #dbeafe; }
+.cargado td { background-color: #dbeafe; }
+. mantenimiento td { background-color: #fef3c7; }
 .leyenda {
   margin-top: 10px;
   display: flex;
@@ -142,6 +143,10 @@ tr:hover { background: #f9fafb; }
   gap: 5px;
 }
 .caja {
+  .caja.disponible { background-color: #22c55e; }
+  .caja.vacio { background-color: #ef4444; }
+  .caja.ocupado { background-color: #3b82f6; }
+  .caja.mantenimiento { background-color: #f59e0b; }
   width: 15px;
   height: 15px;
   border-radius: 3px;
@@ -209,7 +214,8 @@ tr:hover { background: #f9fafb; }
   <div class="leyenda">
     <div><div class="caja disponible"></div> Disponible</div>
     <div><div class="caja vacio"></div> Vacío</div>
-    <div><div class="caja ocupado"></div> Ocupado</div>
+    <div><div class="caja cargado"></div> Ocupado</div>
+    <div><div class="caja mantenimiento"></div Mantenimiento</div>
   </div>
 
 </div>
@@ -348,8 +354,9 @@ function render(data, mostrarOrden) {
   document.getElementById("thead").innerHTML = "<tr>" + thsHtml + "</tr>";
 
   document.getElementById("tbody").innerHTML = data.map(row => {
-    let clase = "ocupado";
+    let clase = "cargado";
     if ((row["CLIENTE"] || "").includes("DISPONIBLE")) clase = "disponible";
+    else if ((row["CLIENTE"] || "").includes("MANTENIMIENTO")) clase = "mantenimiento";
     else if ((row["CLIENTE"] || "").includes("VACIO")) clase = "vacio";
 
     let tds = colsVisibles.map(c => "<td>" + (row[c] || "") + "</td>").join("");
