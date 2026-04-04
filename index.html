@@ -7,7 +7,7 @@
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: url('fondo.jpg') no-repeat center center fixed;
+  background: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70') no-repeat center center fixed;
   background-size: cover;
   margin: 0;
   padding: 20px;
@@ -123,7 +123,7 @@ tr:hover { background: #f9fafb; }
 <body>
 <div class="container overlay">
 
-<img class="logo" src="Logo___EXPOVERDE.png">
+<img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg">
 
 <h1>ESTADO DE FLOTA - EXPOVERDE 2026</h1>
 
@@ -183,11 +183,47 @@ function crearFiltros() {
   cont.innerHTML = "";
 
   columnas.forEach(col => {
+    if (col === ORDEN_COL) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.flexDirection = "column";
+
+    const input = document.createElement("input");
+    input.placeholder = "Buscar " + col;
+    input.style.marginBottom = "4px";
+
     const select = document.createElement("select");
 
-    const valores = [...new Set(datos.map(d => d[col]).filter(v => v))];
+    const valoresOriginales = [...new Set(datos.map(d => d[col]).filter(v => v))].sort();
 
-    select.innerHTML = `<option value="">${col}</option>` +
+    function renderOptions(filtroTexto = "") {
+      const filtrados = valoresOriginales.filter(v =>
+        v.toLowerCase().startsWith(filtroTexto.toLowerCase())
+      );
+
+      select.innerHTML = '<option value="">' + col + '</option>' +
+        filtrados.map(v => '<option value="' + v + '">' + v + '</option>').join("");
+
+      if (filtrosActivos[col]) select.value = filtrosActivos[col];
+    }
+
+    renderOptions();
+
+    input.oninput = () => {
+      renderOptions(input.value);
+    };
+
+    select.onchange = () => {
+      filtrosActivos[col] = select.value;
+      aplicarFiltros();
+    };
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(select);
+    cont.appendChild(wrapper);
+  });
+}</option>` +
       valores.map(v => `<option value="${v}">${v}</option>`).join("");
 
     select.onchange = () => {
