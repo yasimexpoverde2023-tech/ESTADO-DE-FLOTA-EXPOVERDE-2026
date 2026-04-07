@@ -187,7 +187,6 @@ h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; color: var(--tex
   margin-bottom: 22px;
 }
 
-/* ── KPIs: 2 filas de 4 ── */
 .kpis {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -237,7 +236,6 @@ h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; color: var(--tex
   font-size: 10px; color: var(--text2);
   text-transform: uppercase; letter-spacing: 1.2px; font-weight: 500;
 }
-/* KPI Mendoza: clickeable + verde */
 .kpi-mendoza {
   cursor: pointer;
   border-color: var(--green-border);
@@ -251,7 +249,6 @@ h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; color: var(--tex
 [data-theme="dark"] .kpi-mendoza .kpi-label { color: var(--green); }
 .kpi-mendoza .kpi-label::after { content: ' ↗'; font-size: 9px; opacity: 0.7; }
 
-/* ── FILTROS ── */
 .filtros-panel {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 16px 18px;
@@ -263,7 +260,6 @@ h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; color: var(--tex
 }
 .filtros-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 
-/* ── CUSTOM SELECT ── */
 .custom-select-wrap { position: relative; }
 .custom-select-trigger {
   width: 100%; background: var(--surface2); border: 1px solid var(--border2);
@@ -305,7 +301,6 @@ h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; color: var(--tex
 .custom-option.hidden   { display: none; }
 .custom-option-none     { color: var(--text3); font-style: italic; }
 
-/* ── ACCIONES ── */
 .acciones { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
@@ -319,7 +314,6 @@ h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; color: var(--tex
 .btn-imprimir:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
 .filtros-activos-info { margin-left: auto; font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
 
-/* ── TABLA ── */
 .table-wrap {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); transition: background 0.3s;
@@ -340,7 +334,6 @@ td {
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { filter: brightness(0.94); }
 
-/* COLORES DE FILAS — sólidos y nítidos */
 tr.disponible td         { background: var(--green-bg); color: var(--green-text); }
 tr.disponible td:first-child { border-left: 4px solid var(--green); }
 tr.vacio td              { background: var(--red-bg); color: var(--red-text); }
@@ -358,7 +351,6 @@ tr.mantenimiento td:first-child { border-left: 4px solid var(--amber); }
 }
 .col-orden { text-align: center; }
 
-/* ── TABLE FOOTER ── */
 .table-footer {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 16px; border-top: 1px solid var(--border);
@@ -399,9 +391,6 @@ tr.mantenimiento td:first-child { border-left: 4px solid var(--amber); }
   .theme-toggle { position: static; margin: 0 auto 10px; }
 }
 
-/* ═══════════════════════════════════════════
-   IMPRESIÓN — 1 hoja A4 horizontal, márgenes mínimos
-═══════════════════════════════════════════ */
 @media print {
   @page { size: A4 landscape; margin: 5mm 6mm; }
 
@@ -429,7 +418,6 @@ tr.mantenimiento td:first-child { border-left: 4px solid var(--amber); }
   #ultima-act { font-size: 7pt !important; padding: 1px 5px !important; }
   .divider { margin-bottom: 2mm !important; }
 
-  /* KPIs compactos: 4 por fila (2 filas) */
   .kpis {
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 2mm !important; margin-bottom: 3mm !important;
