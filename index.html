@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPOVERDE 2026 — Estado de Flota</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-body:        #f0f4f8;
+  --bg-overlay:     rgba(255,255,255,0.93);
+  --surface:        #ffffff;
+  --surface2:       #f6f8fa;
+  --surface3:       #eef1f5;
+  --border:         rgba(0,0,0,0.07);
+  --border2:        rgba(0,0,0,0.13);
+  --text:           #1a202c;
+  --text2:          #4a5568;
+  --text3:          #a0aec0;
+  --shadow:         0 2px 16px rgba(0,0,0,0.10);
+  --shadow-sm:      0 1px 6px rgba(0,0,0,0.07);
+  --green:          #16a34a;
+  --green-bg:       #dcfce7;
+  --green-border:   #86efac;
+  --green-text:     #14532d;
+  --red:            #dc2626;
+  --red-bg:         #fee2e2;
+  --red-border:     #fca5a5;
+  --red-text:       #7f1d1d;
+  --gray:           #64748b;
+  --gray-bg:        #f1f5f9;
+  --gray-border:    #cbd5e1;
+  --gray-text:      #334155;
+  --amber:          #d97706;
+  --amber-bg:       #fef3c7;
+  --amber-border:   #fcd34d;
+  --amber-text:     #78350f;
+  --blue:           #2563eb;
+  --blue-bg:        rgba(37,99,235,0.07);
+  --blue-border:    rgba(37,99,235,0.25);
+  --violet:         #7c3aed;
+  --violet-bg:      #ede9fe;
+  --violet-border:  #c4b5fd;
+  --violet-text:    #3b0764;
+  --teal:           #0d9488;
+  --teal-bg:        #ccfbf1;
+  --teal-border:    #5eead4;
+  --teal-text:      #134e4a;
+  --orange:         #ea580c;
+  --orange-bg:      #ffedd5;
+  --orange-border:  #fdba74;
+  --orange-text:    #7c2d12;
+  --pink:           #db2777;
+  --pink-bg:        #fce7f3;
+  --pink-border:    #f9a8d4;
+  --pink-text:      #831843;
+  --cyan:           #0891b2;
+  --cyan-bg:        #cffafe;
+  --cyan-border:    #67e8f9;
+  --cyan-text:      #164e63;
+  --radius:         12px;
+  --radius-sm:      7px;
+}
+[data-theme="dark"] {
+  --bg-body:        #0d1117;
+  --bg-overlay:     rgba(22,27,34,0.97);
+  --surface:        #161b22;
+  --surface2:       #1c2230;
+  --surface3:       #222d3a;
+  --border:         rgba(255,255,255,0.07);
+  --border2:        rgba(255,255,255,0.13);
+  --text:           #e6edf3;
+  --text2:          #8b949e;
+  --text3:          #484f58;
+  --shadow:         0 2px 20px rgba(0,0,0,0.5);
+  --shadow-sm:      0 1px 8px rgba(0,0,0,0.3);
+  --green:          #3fb950;
+  --green-bg:       rgba(63,185,80,0.14);
+  --green-border:   rgba(63,185,80,0.35);
+  --green-text:     #a7f3c0;
+  --red:            #f85149;
+  --red-bg:         rgba(248,81,73,0.13);
+  --red-border:     rgba(248,81,73,0.35);
+  --red-text:       #fca5a5;
+  --gray:           #94a3b8;
+  --gray-bg:        rgba(148,163,184,0.10);
+  --gray-border:    rgba(148,163,184,0.25);
+  --gray-text:      #cbd5e1;
+  --amber:          #e3b341;
+  --amber-bg:       rgba(227,179,65,0.13);
+  --amber-border:   rgba(227,179,65,0.35);
+  --amber-text:     #fcd34d;
+  --blue:           #58a6ff;
+  --blue-bg:        rgba(88,166,255,0.10);
+  --blue-border:    rgba(88,166,255,0.3);
+  --violet:         #a78bfa;
+  --violet-bg:      rgba(167,139,250,0.13);
+  --violet-border:  rgba(167,139,250,0.35);
+  --violet-text:    #c4b5fd;
+  --teal:           #2dd4bf;
+  --teal-bg:        rgba(45,212,191,0.12);
+  --teal-border:    rgba(45,212,191,0.35);
+  --teal-text:      #99f6e4;
+  --orange:         #fb923c;
+  --orange-bg:      rgba(251,146,60,0.12);
+  --orange-border:  rgba(251,146,60,0.35);
+  --orange-text:    #fdba74;
+  --pink:           #f472b6;
+  --pink-bg:        rgba(244,114,182,0.12);
+  --pink-border:    rgba(244,114,182,0.35);
+  --pink-text:      #f9a8d4;
+  --cyan:           #22d3ee;
+  --cyan-bg:        rgba(34,211,238,0.12);
+  --cyan-border:    rgba(34,211,238,0.35);
+  --cyan-text:      #a5f3fc;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: url('fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  padding: 24px 20px;
+  color: var(--text);
+  font-size: 15px;
+  transition: color 0.3s;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: var(--bg-body);
+  opacity: 0.52; pointer-events: none; z-index: 0;
+  transition: background 0.3s, opacity 0.3s;
+}
+[data-theme="dark"] body::before { opacity: 0.75; }
+
+.container {
+  max-width: 1500px; margin: auto; position: relative; z-index: 1;
+  background: var(--bg-overlay); border-radius: 16px;
+  padding: 28px 28px 24px; box-shadow: var(--shadow);
+  border: 1px solid var(--border2); transition: background 0.3s, box-shadow 0.3s;
+}
+
+/* ── TOGGLE ── */
+.theme-toggle {
+  position: absolute; top: 20px; right: 24px;
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surface2); border: 1px solid var(--border2); border-radius: 20px;
+  padding: 6px 14px 6px 10px; cursor: pointer;
+  font-size: 12px; font-family: 'DM Sans', sans-serif; font-weight: 500;
+  color: var(--text2); transition: all 0.2s; z-index: 10; user-select: none;
+}
+.theme-toggle:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ── HEADER ── */
+.header {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; margin-bottom: 22px; gap: 16px; padding-right: 140px;
+}
+.header-left { display: flex; flex-direction: column; justify-content: center; }
+.header-eyebrow {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--green); font-weight: 600; margin-bottom: 5px;
+}
+h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); line-height: 1.2; }
+.header-center { display: flex; align-items: center; justify-content: center; }
+.logo-wrap img { max-height: 100px; max-width: 220px; object-fit: contain; display: block; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; }
+.ultima-act-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); }
+#ultima-act {
+  font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text2);
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 5px 11px; display: inline-block; transition: all 0.2s;
+}
+#ultima-act.error { color: var(--red); border-color: var(--red-border); font-size: 12px; }
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2) 30%, var(--border2) 70%, transparent);
+  margin-bottom: 22px;
+}
+
+/* ── KPIs: 2 filas de 5 ── */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.kpi {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 13px 15px;
+  position: relative; overflow: hidden; box-shadow: var(--shadow-sm);
+  transition: background 0.3s, border-color 0.2s, transform 0.15s;
+}
+.kpi:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.kpi::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; border-radius: 12px 12px 0 0;
+}
+/* barras de color por KPI */
+.kpi-total::before        { background: linear-gradient(90deg, var(--blue), transparent); }
+.kpi-cargados::before     { background: linear-gradient(90deg, var(--gray), transparent); }
+.kpi-vacios::before       { background: linear-gradient(90deg, var(--red), transparent); }
+.kpi-mantenimiento::before{ background: linear-gradient(90deg, var(--amber), transparent); }
+.kpi-desde-chile::before  { background: linear-gradient(90deg, var(--cyan), transparent); }
+.kpi-mendoza::before      { background: linear-gradient(90deg, var(--green), transparent); }
+.kpi-cordoba::before      { background: linear-gradient(90deg, var(--violet), transparent); }
+.kpi-bsas::before         { background: linear-gradient(90deg, var(--teal), transparent); }
+.kpi-neuquen::before      { background: linear-gradient(90deg, var(--orange), transparent); }
+.kpi-chile::before        { background: linear-gradient(90deg, var(--pink), transparent); }
+
+.kpi-num {
+  font-size: 30px; font-weight: 600; font-family: 'DM Mono', monospace;
+  line-height: 1; margin-bottom: 5px;
+}
+.kpi-total .kpi-num        { color: var(--blue); }
+.kpi-cargados .kpi-num     { color: var(--gray); }
+.kpi-vacios .kpi-num       { color: var(--red); }
+.kpi-mantenimiento .kpi-num{ color: var(--amber); }
+.kpi-desde-chile .kpi-num  { color: var(--cyan); }
+.kpi-mendoza .kpi-num      { color: var(--green); }
+.kpi-cordoba .kpi-num      { color: var(--violet); }
+.kpi-bsas .kpi-num         { color: var(--teal); }
+.kpi-neuquen .kpi-num      { color: var(--orange); }
+.kpi-chile .kpi-num        { color: var(--pink); }
+
+.kpi-label {
+  font-size: 11px; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 1px; font-weight: 500;
+}
+
+/* KPIs clickeables: estilo especial + cursor */
+.kpi-clickable {
+  cursor: pointer;
+}
+/* Colores de fondo para KPIs clickeables que coinciden con su categoría */
+.kpi-mendoza    { border-color: var(--green-border); background: var(--green-bg); }
+.kpi-vacios     { border-color: var(--red-border);   }
+.kpi-mantenimiento { border-color: var(--amber-border); }
+.kpi-desde-chile{ border-color: var(--cyan-border);  }
+.kpi-cordoba    { border-color: var(--violet-border); }
+.kpi-bsas       { border-color: var(--teal-border);  }
+.kpi-neuquen    { border-color: var(--orange-border); }
+.kpi-chile      { border-color: var(--pink-border);  }
+
+.kpi-clickable:hover { filter: brightness(0.95); }
+
+.kpi-clickable .kpi-label {
+  display: flex; align-items: center; gap: 4px;
+}
+.kpi-clickable .kpi-label::after { content: ' ↗'; font-size: 9px; opacity: 0.6; }
+
+/* color de label para KPIs clickeables */
+.kpi-mendoza .kpi-label     { color: var(--green-text); }
+.kpi-vacios .kpi-label      { color: var(--red-text); }
+.kpi-mantenimiento .kpi-label{ color: var(--amber-text); }
+.kpi-desde-chile .kpi-label { color: var(--cyan-text); }
+.kpi-cordoba .kpi-label     { color: var(--violet-text); }
+.kpi-bsas .kpi-label        { color: var(--teal-text); }
+.kpi-neuquen .kpi-label     { color: var(--orange-text); }
+.kpi-chile .kpi-label       { color: var(--pink-text); }
+
+[data-theme="dark"] .kpi-mendoza .kpi-label     { color: var(--green); }
+[data-theme="dark"] .kpi-vacios .kpi-label      { color: var(--red); }
+[data-theme="dark"] .kpi-mantenimiento .kpi-label{ color: var(--amber); }
+[data-theme="dark"] .kpi-desde-chile .kpi-label { color: var(--cyan); }
+[data-theme="dark"] .kpi-cordoba .kpi-label     { color: var(--violet); }
+[data-theme="dark"] .kpi-bsas .kpi-label        { color: var(--teal); }
+[data-theme="dark"] .kpi-neuquen .kpi-label     { color: var(--orange); }
+[data-theme="dark"] .kpi-chile .kpi-label       { color: var(--pink); }
+
+/* ── FILTROS ── */
+.filtros-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  margin-bottom: 14px; box-shadow: var(--shadow-sm); transition: background 0.3s;
+}
+.filtros-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text3); font-weight: 600; margin-bottom: 12px;
+}
+.filtros-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+/* ── CUSTOM SELECT ── */
+.custom-select-wrap { position: relative; }
+.custom-select-trigger {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 8px 10px; color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+  text-align: left; transition: border-color 0.18s, background 0.18s;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 4px; user-select: none; min-height: 36px;
+}
+.custom-select-trigger:hover  { border-color: var(--blue); background: var(--surface3); }
+.custom-select-trigger.active { border-color: var(--blue); background: var(--surface3); }
+.custom-select-trigger.has-value { border-color: var(--green); }
+.custom-select-trigger.has-value .trigger-text { color: var(--green); font-weight: 500; }
+.trigger-text  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.trigger-arrow { width: 14px; height: 14px; flex-shrink: 0; color: var(--text3); transition: transform 0.2s; }
+.custom-select-trigger.active .trigger-arrow { transform: rotate(180deg); }
+.custom-select-dropdown {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18); overflow: hidden;
+}
+.custom-select-dropdown.open { display: block; }
+.custom-select-search {
+  width: 100%; background: var(--surface2); border: none;
+  border-bottom: 1px solid var(--border); padding: 8px 10px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none;
+}
+.custom-select-search::placeholder { color: var(--text3); }
+.custom-select-list { max-height: 200px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+.custom-select-list::-webkit-scrollbar { width: 4px; }
+.custom-select-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.custom-option {
+  padding: 8px 10px; font-size: 13px; cursor: pointer; color: var(--text2);
+  transition: background 0.1s, color 0.1s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.custom-option:hover    { background: var(--surface2); color: var(--text); }
+.custom-option.selected { color: var(--green); background: var(--green-bg); }
+.custom-option.hidden   { display: none; }
+.custom-option-none     { color: var(--text3); font-style: italic; }
+
+/* ── ACCIONES ── */
+.acciones { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid transparent;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px;
+}
+.btn-limpiar  { background: transparent; border-color: var(--red-border); color: var(--red); }
+.btn-limpiar:hover  { background: var(--red-bg); }
+.btn-imprimir { background: var(--surface); border-color: var(--border2); color: var(--text2); }
+.btn-imprimir:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
+.filtros-activos-info { margin-left: auto; font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+/* ── TABLA ── */
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); transition: background 0.3s;
+}
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--surface2); }
+th {
+  padding: 11px 13px; font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--text3); text-align: left;
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+td {
+  padding: 9px 13px; font-size: 14px; font-weight: 500;
+  border-bottom: 1px solid rgba(0,0,0,0.055); transition: filter 0.1s;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { filter: brightness(0.94); }
+
+/* COLORES DE FILAS */
+tr.disponible td         { background: var(--green-bg); color: var(--green-text); }
+tr.disponible td:first-child { border-left: 4px solid var(--green); }
+tr.vacio td              { background: var(--red-bg); color: var(--red-text); }
+tr.vacio td:first-child  { border-left: 4px solid var(--red); }
+tr.cargado td            { background: var(--gray-bg); color: var(--gray-text); }
+tr.cargado td:first-child { border-left: 4px solid var(--gray-border); }
+tr.mantenimiento td      { background: var(--amber-bg); color: var(--amber-text); }
+tr.mantenimiento td:first-child { border-left: 4px solid var(--amber); }
+
+.badge-orden {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--surface3); border: 1px solid var(--green-border);
+  color: var(--green); border-radius: 20px; padding: 2px 10px;
+  font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; min-width: 36px;
+}
+.col-orden { text-align: center; }
+
+/* ── TABLE FOOTER ── */
+.table-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 16px; border-top: 1px solid var(--border);
+  background: var(--surface2); flex-wrap: wrap; gap: 8px;
+}
+.leyenda { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+.leyenda-item {
+  display: flex; align-items: center; gap: 7px; font-size: 12px;
+  color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500;
+}
+.caja { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.caja.disponible    { background: var(--green);  box-shadow: 0 0 5px rgba(22,163,74,0.5); }
+.caja.vacio         { background: var(--red);    box-shadow: 0 0 5px rgba(220,38,38,0.5); }
+.caja.cargado       { background: var(--gray);   box-shadow: 0 0 4px rgba(100,116,139,0.4); }
+.caja.mantenimiento { background: var(--amber);  box-shadow: 0 0 5px rgba(217,119,6,0.5); }
+[data-theme="dark"] .caja.disponible { box-shadow: 0 0 6px rgba(63,185,80,0.5); }
+[data-theme="dark"] .caja.vacio      { box-shadow: 0 0 6px rgba(248,81,73,0.5); }
+[data-theme="dark"] .caja.cargado    { box-shadow: 0 0 5px rgba(148,163,184,0.4); }
+[data-theme="dark"] .caja.mantenimiento { box-shadow: 0 0 6px rgba(227,179,65,0.5); }
+.row-count { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text3); }
+.empty-state { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 14px; }
+
+.loading-bar {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--green) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+  margin-bottom: 20px; border-radius: 1px; display: none;
+}
+.loading-bar.active { display: block; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+@media (max-width: 1100px) { .kpis { grid-template-columns: repeat(5, 1fr); } }
+@media (max-width: 900px) {
+  .kpis { grid-template-columns: repeat(3, 1fr); }
+  .filtros-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .header { grid-template-columns: 1fr; text-align: center; padding-right: 0; gap: 10px; }
+  .header-left, .header-right { align-items: center; }
+  .theme-toggle { position: static; margin: 0 auto 10px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   IMPRESIÓN — A4 horizontal, márgenes mínimos
+   Solo muestra: logo, fecha de impresión y tabla con 5 columnas
+═══════════════════════════════════════════════════════════════ */
+@media print {
+  @page { size: A4 landscape; margin: 5mm 6mm; }
+
+  /* Ocultar todo excepto lo que necesitamos */
+  body::before,
+  .theme-toggle,
+  .header-left,
+  .header-right,
+  .divider,
+  .kpis,
+  .filtros-panel,
+  .acciones,
+  .table-footer { display: none !important; }
+
+  body { background: white !important; padding: 0 !important; font-size: 9pt; }
+
+  .container {
+    box-shadow: none !important; padding: 4mm 4mm 6mm !important;
+    border: none !important; background: white !important;
+    border-radius: 0 !important; max-width: 100% !important;
+  }
+
+  /* Header impresión: solo logo centrado + fecha */
+  .header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 3mm !important;
+    margin-bottom: 4mm !important;
+    padding-right: 0 !important;
+  }
+  .header-center { width: 100% !important; justify-content: center !important; }
+  .logo-wrap img { max-height: 16mm !important; }
+
+  /* Fecha de impresión (generada por JS) */
+  #print-fecha {
+    display: block !important;
+    font-family: 'DM Mono', monospace;
+    font-size: 8pt;
+    color: #555;
+    text-align: center;
+    margin-bottom: 3mm;
+  }
+
+  .table-wrap { border: 0.5pt solid #ccc !important; border-radius: 0 !important; box-shadow: none !important; overflow: visible !important; }
+  .table-container { overflow: visible !important; }
+
+  /* Ocultar columnas que NO son CHOFER, CLIENTE, ORIGEN, DESTINO, OBSERVACION */
+  /* Las columnas se ocultan por clase asignada dinámicamente en JS */
+  th.col-hide, td.col-hide { display: none !important; }
+
+  table { width: 100% !important; border-collapse: collapse !important; font-size: 9pt !important; }
+  thead tr { background: #1e293b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  th {
+    padding: 3px 6px !important; font-size: 8pt !important; letter-spacing: 0.3px !important;
+    color: white !important; background: #1e293b !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    white-space: nowrap !important; border-bottom: none !important;
+  }
+  td {
+    padding: 3.5px 6px !important; font-size: 9pt !important;
+    border-bottom: 0.3pt solid #e2e8f0 !important;
+    white-space: normal !important; word-break: break-word;
+  }
+  tr.disponible td    { background: #bbf7d0 !important; color: #14532d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr.vacio td         { background: #fecaca !important; color: #7f1d1d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr.cargado td       { background: #e2e8f0 !important; color: #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr.mantenimiento td { background: #fde68a !important; color: #78350f !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr.disponible td:first-child    { border-left: 3pt solid #16a34a !important; }
+  tr.vacio td:first-child         { border-left: 3pt solid #dc2626 !important; }
+  tr.cargado td:first-child       { border-left: 3pt solid #94a3b8 !important; }
+  tr.mantenimiento td:first-child { border-left: 3pt solid #d97706 !important; }
+  tbody tr:hover td { filter: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <button class="theme-toggle" onclick="toggleTheme()">
+    <span id="themeIcon">🌙</span>
+    <span id="themeLabel">Modo oscuro</span>
+  </button>
+
+  <div class="loading-bar active" id="loadingBar"></div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-eyebrow">Estado de Flota</div>
+      <h1>EXPOVERDE 2026</h1>
+    </div>
+    <div class="header-center">
+      <div class="logo-wrap">
+        <img src="Logo___EXPOVERDE.png" alt="Expoverde">
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="ultima-act-label">Última modificación del sheet</div>
+      <div id="ultima-act">Cargando…</div>
+    </div>
+  </div>
+  <!-- Fecha de impresión (solo visible al imprimir) -->
+  <div id="print-fecha" style="display:none;"></div>
+
+  <div class="divider"></div>
+
+  <!-- KPIs — FILA 1: Totales / FILA 2: Destinos -->
+  <div class="kpis">
+    <!-- Fila 1 -->
+    <div class="kpi kpi-total">
+      <div class="kpi-num" id="kpiTotalNum">—</div>
+      <div class="kpi-label">Unidades totales</div>
+    </div>
+    <div class="kpi kpi-cargados">
+      <div class="kpi-num" id="kpiCargadosNum">—</div>
+      <div class="kpi-label">Cargados en total</div>
+    </div>
+    <div class="kpi kpi-vacios kpi-clickable" onclick="filtrarKpi('CLIENTE','VACIO')" title="Ver vacíos fuera de Mendoza">
+      <div class="kpi-num" id="kpiVacioNum">—</div>
+      <div class="kpi-label">Vacíos fuera de Mendoza</div>
+    </div>
+    <div class="kpi kpi-mantenimiento kpi-clickable" onclick="filtrarKpi('CLIENTE','MANTENIMIENTO')" title="Ver en mantenimiento">
+      <div class="kpi-num" id="kpiMantNum">—</div>
+      <div class="kpi-label">En mantenimiento</div>
+    </div>
+    <div class="kpi kpi-desde-chile kpi-clickable" onclick="filtrarKpi('ORIGEN','CHILE')" title="Ver internacionales desde Chile">
+      <div class="kpi-num" id="kpiDesdechileNum">—</div>
+      <div class="kpi-label">Internacionales desde Chile</div>
+    </div>
+    <!-- Fila 2 -->
+    <div class="kpi kpi-mendoza kpi-clickable" onclick="filtrarMendoza()" title="Ver disponibles en Mendoza">
+      <div class="kpi-num" id="kpiMendozaNum">—</div>
+      <div class="kpi-label">Disponibles en Mendoza</div>
+    </div>
+    <div class="kpi kpi-cordoba kpi-clickable" onclick="filtrarKpi('DESTINO','CORDOBA')" title="Ver destino Córdoba">
+      <div class="kpi-num" id="kpiCordobaNum">—</div>
+      <div class="kpi-label">Con destino a Córdoba</div>
+    </div>
+    <div class="kpi kpi-bsas kpi-clickable" onclick="filtrarKpi('DESTINO','BUENOS AIRES')" title="Ver destino Buenos Aires">
+      <div class="kpi-num" id="kpiBsasNum">—</div>
+      <div class="kpi-label">Con destino a Buenos Aires</div>
+    </div>
+    <div class="kpi kpi-neuquen kpi-clickable" onclick="filtrarKpi('DESTINO','NEUQUEN')" title="Ver destino Neuquén">
+      <div class="kpi-num" id="kpiNeuquenNum">—</div>
+      <div class="kpi-label">Con destino a Neuquén</div>
+    </div>
+    <div class="kpi kpi-chile kpi-clickable" onclick="filtrarKpi('DESTINO','CHILE')" title="Ver internacionales a Chile">
+      <div class="kpi-num" id="kpiChileNum">—</div>
+      <div class="kpi-label">Internacionales a Chile</div>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filtros-panel">
+    <div class="filtros-title">Filtros</div>
+    <div class="filtros-grid" id="filtros"></div>
+  </div>
+
+  <!-- ACCIONES -->
+  <div class="acciones">
+    <button class="btn btn-limpiar" onclick="limpiarFiltros()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 3l10 10M13 3L3 13"/></svg>
+      Limpiar filtros
+    </button>
+    <button class="btn btn-imprimir" onclick="imprimir()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="1" width="10" height="5" rx="1"/><rect x="1" y="6" width="14" height="6" rx="1"/><rect x="4" y="10" width="8" height="5" rx="1"/><circle cx="12" cy="9" r="1" fill="currentColor" stroke="none"/></svg>
+      Imprimir vista actual
+    </button>
+    <span class="filtros-activos-info" id="filtrosInfo"></span>
+  </div>
+
+  <!-- TABLA -->
+  <div class="table-wrap">
+    <div class="table-container">
+      <table>
+        <thead id="thead"></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <div class="leyenda">
+        <div class="leyenda-item"><div class="caja disponible"></div> Disponible</div>
+        <div class="leyenda-item"><div class="caja vacio"></div> Vacío</div>
+        <div class="leyenda-item"><div class="caja cargado"></div> Cargado</div>
+        <div class="leyenda-item"><div class="caja mantenimiento"></div> Mantenimiento</div>
+      </div>
+      <div class="row-count" id="rowCount"></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+/* ══ CONFIGURACIÓN ══════════════════════════════════════════════════════════ */
+const SHEET_ID  = "1gvbQtOUJoM64tOn4uUBTI0cvpFa8EHOU";
+const API_KEY   = "AIzaSyCQv1cRCtgTWv8MZ8MWogKryUpXh8fdH-U";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/export?format=csv&gid=855031501";
+const ORDEN_COL = "ORDEN";
+
+// Columnas visibles en impresión (en este orden)
+const COLS_IMPRIMIR = ["CHOFER", "CLIENTE", "ORIGEN", "DESTINO", "OBSERVACION"];
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+let datos = [], columnas = [], filtrosActivos = {};
+
+/* ── TEMA ── */
+function toggleTheme() {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  if (dark) {
+    document.documentElement.removeAttribute("data-theme");
+    document.getElementById("themeIcon").textContent  = "🌙";
+    document.getElementById("themeLabel").textContent = "Modo oscuro";
+    localStorage.setItem("ev_theme", "light");
+  } else {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("themeIcon").textContent  = "☀️";
+    document.getElementById("themeLabel").textContent = "Modo claro";
+    localStorage.setItem("ev_theme", "dark");
+  }
+}
+(function applyTheme() {
+  if (localStorage.getItem("ev_theme") === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("themeIcon").textContent  = "☀️";
+    document.getElementById("themeLabel").textContent = "Modo claro";
+  }
+})();
+
+/* ── IMPRIMIR: marca columnas a ocultar y genera fecha ── */
+function imprimir() {
+  // Generar fecha de impresión
+  const ahora = new Date();
+  const p = n => String(n).padStart(2, "0");
+  const fechaStr = "Impreso el " + p(ahora.getDate()) + "/" + p(ahora.getMonth()+1) + "/" + ahora.getFullYear()
+    + " a las " + p(ahora.getHours()) + ":" + p(ahora.getMinutes());
+  document.getElementById("print-fecha").textContent = fechaStr;
+
+  // Marcar columnas a ocultar: las que NO están en COLS_IMPRIMIR
+  document.querySelectorAll("#thead th, #tbody td").forEach(cell => {
+    const col = cell.dataset.col;
+    if (col && !COLS_IMPRIMIR.includes(col)) {
+      cell.classList.add("col-hide");
+    } else {
+      cell.classList.remove("col-hide");
+    }
+  });
+
+  window.print();
+}
+
+/* ── ACCESOS DIRECTOS KPI ── */
+function filtrarMendoza() {
+  filtrosActivos["CLIENTE"] = "DISPONIBLE";
+  filtrosActivos["DESTINO"] = "MENDOZA";
+  crearFiltros();
+  aplicarFiltros();
+}
+
+function filtrarKpi(col, valor) {
+  // Limpiar filtros previos y aplicar solo el del KPI
+  Object.keys(filtrosActivos).forEach(k => filtrosActivos[k] = "");
+  filtrosActivos[col] = valor;
+  crearFiltros();
+  aplicarFiltros();
+}
+
+/* ── FECHA REAL DEL SHEET ── */
+async function obtenerFechaModificacion() {
+  const el = document.getElementById("ultima-act");
+  try {
+    const r = await fetch("https://www.googleapis.com/drive/v3/files/" + SHEET_ID + "?fields=modifiedTime&key=" + API_KEY);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const json = await r.json();
+    if (!json.modifiedTime) throw new Error("Sin modifiedTime");
+    const d  = new Date(json.modifiedTime);
+    const ar = new Date(d.getTime() - 3 * 60 * 60 * 1000);
+    const p  = n => String(n).padStart(2, "0");
+    el.textContent = p(ar.getUTCDate()) + "/" + p(ar.getUTCMonth()+1) + "/" + ar.getUTCFullYear()
+      + "  " + p(ar.getUTCHours()) + ":" + p(ar.getUTCMinutes());
+    el.classList.remove("error");
+  } catch(e) {
+    el.textContent = "No disponible";
+    el.classList.add("error");
+    el.title = e.message;
+  }
+}
+
+/* ── PARSEAR CSV ── */
+function parseCSV(text) {
+  return text.split("\n").map(line => {
+    const row = []; let cur = "", inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; continue; }
+      if (c === ',' && !inQ) { row.push(cur.trim()); cur = ""; continue; }
+      cur += c;
+    }
+    row.push(cur.trim());
+    return row;
+  });
+}
+
+/* ── CARGAR DATOS ── */
+async function cargar() {
+  document.getElementById("loadingBar").classList.add("active");
+  try {
+    const res  = await fetch(SHEET_URL + "&t=" + Date.now());
+    const text = await res.text();
+    const filas = parseCSV(text);
+    columnas = filas[0].map(c => c.replace(/\r/g,'').trim());
+    datos = filas.slice(1).filter(f => f.some(c => c.trim())).map(fila => {
+      const obj = {};
+      columnas.forEach((col, i) => obj[col] = (fila[i]||"").replace(/\r/g,'').trim());
+      return obj;
+    });
+    columnas.forEach(col => { if (!(col in filtrosActivos)) filtrosActivos[col] = ""; });
+    crearFiltros();
+    aplicarFiltros();
+  } catch(e) {
+    document.getElementById("tbody").innerHTML = '<tr><td colspan="99" class="empty-state">Error al cargar los datos.</td></tr>';
+  }
+  document.getElementById("loadingBar").classList.remove("active");
+}
+
+/* ── CUSTOM SELECT ── */
+function crearCustomSelect(col, valores) {
+  const wrap = document.createElement("div");
+  wrap.className = "custom-select-wrap";
+  const trigger = document.createElement("div");
+  trigger.className = "custom-select-trigger" + (filtrosActivos[col] ? " has-value" : "");
+  trigger.innerHTML = '<span class="trigger-text">' + (filtrosActivos[col] || col) + '</span>'
+    + '<svg class="trigger-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>';
+  const dropdown = document.createElement("div");
+  dropdown.className = "custom-select-dropdown";
+  const search = document.createElement("input");
+  search.type = "text"; search.className = "custom-select-search";
+  search.placeholder = "Buscar " + col + "…"; search.autocomplete = "off";
+  const list = document.createElement("div");
+  list.className = "custom-select-list";
+  const none = document.createElement("div");
+  none.className = "custom-option custom-option-none" + (!filtrosActivos[col] ? " selected" : "");
+  none.dataset.value = ""; none.textContent = "Todos";
+  list.appendChild(none);
+  valores.forEach(v => {
+    const opt = document.createElement("div");
+    opt.className = "custom-option" + (filtrosActivos[col] === v ? " selected" : "");
+    opt.dataset.value = v; opt.textContent = v;
+    list.appendChild(opt);
+  });
+  dropdown.appendChild(search); dropdown.appendChild(list);
+  wrap.appendChild(trigger); wrap.appendChild(dropdown);
+  search.addEventListener("input", () => {
+    const q = search.value.toLowerCase();
+    list.querySelectorAll(".custom-option:not(.custom-option-none)").forEach(o =>
+      o.classList.toggle("hidden", !o.textContent.toLowerCase().includes(q)));
+  });
+  list.addEventListener("click", e => {
+    const opt = e.target.closest(".custom-option");
+    if (!opt) return;
+    const val = opt.dataset.value;
+    filtrosActivos[col] = val;
+    trigger.querySelector(".trigger-text").textContent = val || col;
+    trigger.className = "custom-select-trigger" + (val ? " has-value" : "");
+    list.querySelectorAll(".custom-option").forEach(o => o.classList.remove("selected"));
+    opt.classList.add("selected");
+    closeDropdown(wrap);
+    aplicarFiltros();
+  });
+  trigger.addEventListener("click", e => {
+    e.stopPropagation();
+    const open = dropdown.classList.contains("open");
+    closeAllDropdowns();
+    if (!open) {
+      dropdown.classList.add("open"); trigger.classList.add("active");
+      search.value = "";
+      list.querySelectorAll(".custom-option").forEach(o => o.classList.remove("hidden"));
+      setTimeout(() => search.focus(), 40);
+    }
+  });
+  return wrap;
+}
+
+function closeDropdown(w) {
+  w.querySelector(".custom-select-dropdown").classList.remove("open");
+  w.querySelector(".custom-select-trigger").classList.remove("active");
+}
+function closeAllDropdowns() {
+  document.querySelectorAll(".custom-select-dropdown.open").forEach(d => {
+    d.classList.remove("open");
+    d.closest(".custom-select-wrap").querySelector(".custom-select-trigger").classList.remove("active");
+  });
+}
+document.addEventListener("click", closeAllDropdowns);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeAllDropdowns(); });
+
+/* ── CREAR FILTROS ── */
+function crearFiltros() {
+  const cont = document.getElementById("filtros");
+  cont.innerHTML = "";
+  columnas.forEach(col => {
+    if (col === ORDEN_COL) return;
+    const vals = [...new Set(datos.map(d => d[col]).filter(v => v))].sort();
+    cont.appendChild(crearCustomSelect(col, vals));
+  });
+}
+
+/* ── APLICAR FILTROS ── */
+function aplicarFiltros() {
+  let f = datos;
+  Object.keys(filtrosActivos).forEach(col => {
+    if (filtrosActivos[col]) f = f.filter(d => d[col] === filtrosActivos[col]);
+  });
+  const mendozaDisp =
+    (filtrosActivos["CLIENTE"]||"").includes("DISPONIBLE") &&
+    (filtrosActivos["DESTINO"]||"") === "MENDOZA";
+  if (mendozaDisp && columnas.includes(ORDEN_COL))
+    f = [...f].sort((a,b) => (parseInt(a[ORDEN_COL])||9999) - (parseInt(b[ORDEN_COL])||9999));
+  const n = Object.values(filtrosActivos).filter(v => v).length;
+  document.getElementById("filtrosInfo").textContent =
+    n > 0 ? n + " filtro" + (n > 1 ? "s" : "") + " activo" + (n > 1 ? "s" : "") : "";
+  actualizarKPIs(f);
+  render(f, mendozaDisp);
+}
+
+/* ── KPIs ── */
+function actualizarKPIs(data) {
+  document.getElementById("kpiTotalNum").textContent     = data.length;
+  document.getElementById("kpiCargadosNum").textContent  = data.filter(d => {
+    const c = (d["CLIENTE"]||"").toUpperCase();
+    return !c.includes("DISPONIBLE") && !c.includes("VACIO") && !c.includes("MANTENIMIENTO");
+  }).length;
+  document.getElementById("kpiVacioNum").textContent     = data.filter(d => (d["CLIENTE"]||"").toUpperCase().includes("VACIO")).length;
+  document.getElementById("kpiMantNum").textContent      = data.filter(d => (d["CLIENTE"]||"").toUpperCase().includes("MANTENIMIENTO")).length;
+
+  // KPIs sobre el total general (no filtrado)
+  document.getElementById("kpiMendozaNum").textContent   = datos.filter(d =>
+    (d["CLIENTE"]||"").toUpperCase().includes("DISPONIBLE") &&
+    (d["DESTINO"]||"").toUpperCase() === "MENDOZA").length;
+  document.getElementById("kpiCordobaNum").textContent   = datos.filter(d => (d["DESTINO"]||"").toUpperCase() === "CORDOBA").length;
+  document.getElementById("kpiBsasNum").textContent      = datos.filter(d => (d["DESTINO"]||"").toUpperCase() === "BUENOS AIRES").length;
+  document.getElementById("kpiNeuquenNum").textContent   = datos.filter(d => (d["DESTINO"]||"").toUpperCase() === "NEUQUEN").length;
+  document.getElementById("kpiChileNum").textContent     = datos.filter(d => (d["DESTINO"]||"").toUpperCase() === "CHILE").length;
+  document.getElementById("kpiDesdechileNum").textContent= datos.filter(d => (d["ORIGEN"]||"").toUpperCase() === "CHILE").length;
+}
+
+/* ── LIMPIAR ── */
+function limpiarFiltros() {
+  Object.keys(filtrosActivos).forEach(k => filtrosActivos[k] = "");
+  crearFiltros(); aplicarFiltros();
+}
+
+/* ── RENDER TABLA ── */
+function render(data, mostrarOrden) {
+  const cols = columnas.filter(c => c !== ORDEN_COL);
+
+  // Construir headers con data-col para el sistema de impresión
+  let ths = cols.map(c => '<th data-col="' + c + '">' + c + '</th>').join("");
+  if (mostrarOrden && columnas.includes(ORDEN_COL)) ths += '<th data-col="ORDEN">N° ORDEN</th>';
+  document.getElementById("thead").innerHTML = "<tr>" + ths + "</tr>";
+
+  if (!data.length) {
+    document.getElementById("tbody").innerHTML =
+      '<tr><td colspan="' + (cols.length + (mostrarOrden?1:0)) + '" class="empty-state">Sin registros con los filtros aplicados.</td></tr>';
+    document.getElementById("rowCount").textContent = "0 registros";
+    return;
+  }
+
+  document.getElementById("tbody").innerHTML = data.map(row => {
+    const c = (row["CLIENTE"]||"").toUpperCase();
+    let clase = "cargado";
+    if      (c.includes("DISPONIBLE"))    clase = "disponible";
+    else if (c.includes("VACIO"))         clase = "vacio";
+    else if (c.includes("MANTENIMIENTO")) clase = "mantenimiento";
+
+    // Cada td lleva data-col para poder ocultarlo al imprimir
+    let tds = cols.map(col => '<td data-col="' + col + '">' + (row[col]||"") + '</td>').join("");
+    if (mostrarOrden && columnas.includes(ORDEN_COL)) {
+      const n = parseInt(row[ORDEN_COL]);
+      tds += '<td data-col="ORDEN" class="col-orden"><span class="badge-orden">' + (isNaN(n) ? "—" : n+"°") + '</span></td>';
+    }
+    return "<tr class='" + clase + "'>" + tds + "</tr>";
+  }).join("");
+
+  document.getElementById("rowCount").textContent =
+    data.length + " registro" + (data.length !== 1 ? "s" : "");
+}
+
+/* ── INIT ── */
+obtenerFechaModificacion();
+cargar();
+</script>
+</body>
+</html>
