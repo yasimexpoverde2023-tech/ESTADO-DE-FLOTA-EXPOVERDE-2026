@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EXPOVERDE 2026 — Estado de Flota</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   VARIABLES GLOBALES — LIGHT + DARK
+═══════════════════════════════════════════════════ */
+:root {
+  --bg-body:        #f0f4f8;
+  --bg-overlay:     rgba(255,255,255,0.93);
+  --surface:        #ffffff;
+  --surface2:       #f6f8fa;
+  --surface3:       #eef1f5;
+  --border:         rgba(0,0,0,0.07);
+  --border2:        rgba(0,0,0,0.13);
+  --text:           #1a202c;
+  --text2:          #4a5568;
+  --text3:          #a0aec0;
+  --shadow:         0 2px 16px rgba(0,0,0,0.10);
+  --shadow-sm:      0 1px 6px rgba(0,0,0,0.07);
+  --green:          #16a34a; --green-bg: #dcfce7; --green-border: #86efac; --green-text: #14532d;
+  --red:            #dc2626; --red-bg: #fee2e2;   --red-border: #fca5a5;   --red-text: #7f1d1d;
+  --gray:           #64748b; --gray-bg: #f1f5f9;  --gray-border: #cbd5e1;  --gray-text: #334155;
+  --amber:          #d97706; --amber-bg: #fef3c7; --amber-border: #fcd34d; --amber-text: #78350f;
+  --blue:           #2563eb; --blue-bg: rgba(37,99,235,0.07); --blue-border: rgba(37,99,235,0.25);
+  --violet:         #7c3aed; --violet-bg: #ede9fe; --violet-border: #c4b5fd; --violet-text: #3b0764;
+  --teal:           #0d9488; --teal-bg: #ccfbf1;  --teal-border: #5eead4;  --teal-text: #134e4a;
+  --orange:         #ea580c; --orange-bg: #ffedd5; --orange-border: #fdba74; --orange-text: #7c2d12;
+  --pink:           #db2777; --pink-bg: #fce7f3;  --pink-border: #f9a8d4;  --pink-text: #831843;
+  --cyan:           #0891b2; --cyan-bg: #cffafe;  --cyan-border: #67e8f9;  --cyan-text: #164e63;
+  --lime:           #65a30d; --lime-bg: #ecfccb;  --lime-border: #bef264;  --lime-text: #365314;
+  --radius:         12px;
+  --radius-sm:      7px;
+}
+[data-theme="dark"] {
+  --bg-body:        #0d1117;
+  --bg-overlay:     rgba(22,27,34,0.97);
+  --surface:        #161b22;
+  --surface2:       #1c2230;
+  --surface3:       #222d3a;
+  --border:         rgba(255,255,255,0.07);
+  --border2:        rgba(255,255,255,0.13);
+  --text:           #e6edf3;
+  --text2:          #8b949e;
+  --text3:          #484f58;
+  --shadow:         0 2px 20px rgba(0,0,0,0.5);
+  --shadow-sm:      0 1px 8px rgba(0,0,0,0.3);
+  --green:          #3fb950; --green-bg: rgba(63,185,80,0.14); --green-border: rgba(63,185,80,0.35); --green-text: #a7f3c0;
+  --red:            #f85149; --red-bg: rgba(248,81,73,0.13);   --red-border: rgba(248,81,73,0.35);   --red-text: #fca5a5;
+  --gray:           #94a3b8; --gray-bg: rgba(148,163,184,0.10); --gray-border: rgba(148,163,184,0.25); --gray-text: #cbd5e1;
+  --amber:          #e3b341; --amber-bg: rgba(227,179,65,0.13); --amber-border: rgba(227,179,65,0.35); --amber-text: #fcd34d;
+  --blue:           #58a6ff; --blue-bg: rgba(88,166,255,0.10);  --blue-border: rgba(88,166,255,0.3);
+  --violet:         #a78bfa; --violet-bg: rgba(167,139,250,0.13); --violet-border: rgba(167,139,250,0.35); --violet-text: #c4b5fd;
+  --teal:           #2dd4bf; --teal-bg: rgba(45,212,191,0.12);  --teal-border: rgba(45,212,191,0.35); --teal-text: #99f6e4;
+  --orange:         #fb923c; --orange-bg: rgba(251,146,60,0.12); --orange-border: rgba(251,146,60,0.35); --orange-text: #fdba74;
+  --pink:           #f472b6; --pink-bg: rgba(244,114,182,0.12); --pink-border: rgba(244,114,182,0.35); --pink-text: #f9a8d4;
+  --cyan:           #22d3ee; --cyan-bg: rgba(34,211,238,0.12);  --cyan-border: rgba(34,211,238,0.35); --cyan-text: #a5f3fc;
+  --lime:           #a3e635; --lime-bg: rgba(163,230,53,0.12);  --lime-border: rgba(163,230,53,0.35); --lime-text: #d9f99d;
+}
+
+/* ═══════════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════════ */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: url('fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  color: var(--text);
+  font-size: 15px;
+  transition: color 0.3s;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background: var(--bg-body); opacity: 0.52;
+  pointer-events: none; z-index: 0;
+  transition: background 0.3s, opacity 0.3s;
+}
+[data-theme="dark"] body::before { opacity: 0.75; }
+
+/* ═══════════════════════════════════════════════════
+   DESKTOP LAYOUT  (> 768px)
+═══════════════════════════════════════════════════ */
+#view-desktop {
+  display: block;
+  padding: 24px 20px;
+}
+#view-mobile { display: none; }
+
+.container {
+  max-width: 1500px; margin: auto; position: relative; z-index: 1;
+  background: var(--bg-overlay); border-radius: 16px;
+  padding: 28px 28px 24px; box-shadow: var(--shadow);
+  border: 1px solid var(--border2); transition: background 0.3s, box-shadow 0.3s;
+}
+
+/* toggle oscuro */
+.theme-toggle {
+  position: absolute; top: 20px; right: 24px;
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surface2); border: 1px solid var(--border2); border-radius: 20px;
+  padding: 6px 14px 6px 10px; cursor: pointer;
+  font-size: 12px; font-weight: 500; color: var(--text2);
+  transition: all 0.2s; z-index: 10; user-select: none;
+}
+.theme-toggle:hover { border-color: var(--blue); color: var(--blue); }
+
+/* header desktop */
+.header {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; margin-bottom: 22px; gap: 16px; padding-right: 140px;
+}
+.header-left { display: flex; flex-direction: column; justify-content: center; }
+.header-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 5px; }
+h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); line-height: 1.2; }
+.header-center { display: flex; align-items: center; justify-content: center; }
+.logo-wrap img { max-height: 100px; max-width: 220px; object-fit: contain; display: block; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.ultima-act-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); }
+#ultima-act, #m-ultima-act {
+  font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text2);
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 5px 11px; display: inline-block; transition: all 0.2s;
+}
+#ultima-act.error, #m-ultima-act.error { color: var(--red); border-color: var(--red-border); font-size: 11px; }
+
+/* refresh indicator */
+.refresh-info {
+  font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace;
+  display: flex; align-items: center; gap: 5px; margin-top: 3px;
+}
+.rdot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+  animation: rpulse 2s ease-in-out infinite; flex-shrink: 0;
+}
+@keyframes rpulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+/* divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2) 30%, var(--border2) 70%, transparent);
+  margin-bottom: 22px;
+}
+
+/* ── KPIs desktop ── */
+.kpis {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 22px;
+}
+.kpi {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 13px 15px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm);
+  transition: background 0.3s, border-color 0.2s, transform 0.15s;
+}
+.kpi:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 12px 12px 0 0; }
+
+.kpi-total::before        { background: linear-gradient(90deg, var(--blue), transparent); }
+.kpi-cargados::before     { background: linear-gradient(90deg, var(--gray), transparent); }
+.kpi-vacios::before       { background: linear-gradient(90deg, var(--red), transparent); }
+.kpi-mantenimiento::before{ background: linear-gradient(90deg, var(--amber), transparent); }
+.kpi-desde-chile::before  { background: linear-gradient(90deg, var(--cyan), transparent); }
+.kpi-mendoza::before      { background: linear-gradient(90deg, var(--green), transparent); }
+.kpi-mza-destino::before  { background: linear-gradient(90deg, var(--lime), transparent); }
+.kpi-cordoba::before      { background: linear-gradient(90deg, var(--violet), transparent); }
+.kpi-bsas::before         { background: linear-gradient(90deg, var(--teal), transparent); }
+.kpi-neuquen::before      { background: linear-gradient(90deg, var(--orange), transparent); }
+.kpi-chile::before        { background: linear-gradient(90deg, var(--pink), transparent); }
+
+.kpi-num { font-size: 30px; font-weight: 600; font-family: 'DM Mono', monospace; line-height: 1; margin-bottom: 5px; }
+.kpi-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+
+.kpi-total .kpi-num        { color: var(--blue); }
+.kpi-cargados .kpi-num     { color: var(--gray); }
+.kpi-vacios .kpi-num       { color: var(--red); }
+.kpi-mantenimiento .kpi-num{ color: var(--amber); }
+.kpi-desde-chile .kpi-num  { color: var(--cyan); }
+.kpi-mendoza .kpi-num      { color: var(--green); }
+.kpi-mza-destino .kpi-num  { color: var(--lime); }
+.kpi-cordoba .kpi-num      { color: var(--violet); }
+.kpi-bsas .kpi-num         { color: var(--teal); }
+.kpi-neuquen .kpi-num      { color: var(--orange); }
+.kpi-chile .kpi-num        { color: var(--pink); }
+
+.kpi-clickable { cursor: pointer; }
+.kpi-clickable:hover { filter: brightness(0.95); }
+.kpi-clickable .kpi-label { display: flex; align-items: center; gap: 4px; }
+.kpi-clickable .kpi-label::after { content: ' ↗'; font-size: 9px; opacity: 0.6; }
+
+.kpi-mendoza    { border-color: var(--green-border);  background: var(--green-bg); }
+.kpi-mza-destino{ border-color: var(--lime-border); }
+.kpi-vacios     { border-color: var(--red-border); }
+.kpi-mantenimiento { border-color: var(--amber-border); }
+.kpi-desde-chile{ border-color: var(--cyan-border); }
+.kpi-cordoba    { border-color: var(--violet-border); }
+.kpi-bsas       { border-color: var(--teal-border); }
+.kpi-neuquen    { border-color: var(--orange-border); }
+.kpi-chile      { border-color: var(--pink-border); }
+
+.kpi-mendoza .kpi-label     { color: var(--green-text); }
+.kpi-mza-destino .kpi-label { color: var(--lime-text); }
+.kpi-vacios .kpi-label      { color: var(--red-text); }
+.kpi-mantenimiento .kpi-label{ color: var(--amber-text); }
+.kpi-desde-chile .kpi-label { color: var(--cyan-text); }
+.kpi-cordoba .kpi-label     { color: var(--violet-text); }
+.kpi-bsas .kpi-label        { color: var(--teal-text); }
+.kpi-neuquen .kpi-label     { color: var(--orange-text); }
+.kpi-chile .kpi-label       { color: var(--pink-text); }
+
+[data-theme="dark"] .kpi-mendoza .kpi-label     { color: var(--green); }
+[data-theme="dark"] .kpi-mza-destino .kpi-label { color: var(--lime); }
+[data-theme="dark"] .kpi-vacios .kpi-label      { color: var(--red); }
+[data-theme="dark"] .kpi-mantenimiento .kpi-label{ color: var(--amber); }
+[data-theme="dark"] .kpi-desde-chile .kpi-label { color: var(--cyan); }
+[data-theme="dark"] .kpi-cordoba .kpi-label     { color: var(--violet); }
+[data-theme="dark"] .kpi-bsas .kpi-label        { color: var(--teal); }
+[data-theme="dark"] .kpi-neuquen .kpi-label     { color: var(--orange); }
+[data-theme="dark"] .kpi-chile .kpi-label       { color: var(--pink); }
+
+/* ── Panel relevos ── */
+.relevos-panel {
+  background: var(--surface); border: 1px solid var(--amber-border);
+  border-radius: var(--radius); padding: 12px 18px; margin-bottom: 14px;
+  box-shadow: var(--shadow-sm); display: none;
+}
+.relevos-panel.visible { display: block; }
+.relevos-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.relevos-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--amber-text); }
+[data-theme="dark"] .relevos-title { color: var(--amber); }
+.relevos-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.relevo-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--amber-bg); border: 1px solid var(--amber-border);
+  border-radius: 8px; padding: 5px 11px;
+  font-size: 13px; font-weight: 500; color: var(--amber-text);
+}
+[data-theme="dark"] .relevo-chip { color: var(--amber-text); }
+.relevo-chip-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── Filtros desktop ── */
+.filtros-panel {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 18px; margin-bottom: 14px; box-shadow: var(--shadow-sm);
+}
+.filtros-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); font-weight: 600; margin-bottom: 12px; }
+.filtros-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+/* ── Custom select ── */
+.custom-select-wrap { position: relative; }
+.custom-select-trigger {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 8px 10px; color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+  text-align: left; transition: border-color 0.18s, background 0.18s;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 4px; user-select: none; min-height: 36px;
+}
+.custom-select-trigger:hover  { border-color: var(--blue); background: var(--surface3); }
+.custom-select-trigger.active { border-color: var(--blue); background: var(--surface3); }
+.custom-select-trigger.has-value { border-color: var(--green); }
+.custom-select-trigger.has-value .trigger-text { color: var(--green); font-weight: 500; }
+.trigger-text  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.trigger-arrow { width: 14px; height: 14px; flex-shrink: 0; color: var(--text3); transition: transform 0.2s; }
+.custom-select-trigger.active .trigger-arrow { transform: rotate(180deg); }
+.custom-select-dropdown {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18); overflow: hidden;
+}
+.custom-select-dropdown.open { display: block; }
+.custom-select-search {
+  width: 100%; background: var(--surface2); border: none;
+  border-bottom: 1px solid var(--border); padding: 8px 10px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none;
+}
+.custom-select-search::placeholder { color: var(--text3); }
+.custom-select-list { max-height: 200px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+.custom-select-list::-webkit-scrollbar { width: 4px; }
+.custom-select-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.custom-option { padding: 8px 10px; font-size: 13px; cursor: pointer; color: var(--text2); transition: background 0.1s, color 0.1s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.custom-option:hover    { background: var(--surface2); color: var(--text); }
+.custom-option.selected { color: var(--green); background: var(--green-bg); }
+.custom-option.hidden   { display: none; }
+.custom-option-none     { color: var(--text3); font-style: italic; }
+
+/* ── Botones ── */
+.acciones { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid transparent;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px;
+}
+.btn-limpiar { background: transparent; border-color: var(--red-border); color: var(--red); }
+.btn-limpiar:hover { background: var(--red-bg); }
+.btn-imprimir { background: var(--surface); border-color: var(--border2); color: var(--text2); }
+.btn-imprimir:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
+.filtros-activos-info { margin-left: auto; font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+/* ── Tabla desktop ── */
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--surface2); }
+th { padding: 11px 13px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text3); text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 9px 13px; font-size: 14px; font-weight: 500; border-bottom: 1px solid rgba(0,0,0,0.055); transition: filter 0.1s; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { filter: brightness(0.94); }
+
+th[data-col="ACTUALIZADO HOY?"], td[data-col="ACTUALIZADO HOY?"] { width: 60px; min-width: 60px; max-width: 60px; text-align: center; padding: 6px 4px; font-size: 16px; letter-spacing: 0; }
+
+tr.disponible td    { background: var(--green-bg); color: var(--green-text); }
+tr.disponible td:first-child { border-left: 4px solid var(--green); }
+tr.vacio td         { background: var(--red-bg); color: var(--red-text); }
+tr.vacio td:first-child { border-left: 4px solid var(--red); }
+tr.cargado td       { background: var(--gray-bg); color: var(--gray-text); }
+tr.cargado td:first-child { border-left: 4px solid var(--gray-border); }
+tr.mantenimiento td { background: var(--amber-bg); color: var(--amber-text); }
+tr.mantenimiento td:first-child { border-left: 4px solid var(--amber); }
+
+.badge-orden { display: inline-flex; align-items: center; justify-content: center; background: var(--surface3); border: 1px solid var(--green-border); color: var(--green); border-radius: 20px; padding: 2px 10px; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; min-width: 36px; }
+.col-orden { text-align: center; }
+
+.table-footer { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; border-top: 1px solid var(--border); background: var(--surface2); flex-wrap: wrap; gap: 8px; }
+.leyenda { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+.leyenda-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; }
+.caja { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.caja.disponible    { background: var(--green);  box-shadow: 0 0 5px rgba(22,163,74,0.5); }
+.caja.vacio         { background: var(--red);    box-shadow: 0 0 5px rgba(220,38,38,0.5); }
+.caja.cargado       { background: var(--gray);   }
+.caja.mantenimiento { background: var(--amber);  box-shadow: 0 0 5px rgba(217,119,6,0.5); }
+[data-theme="dark"] .caja.disponible { box-shadow: 0 0 6px rgba(63,185,80,0.5); }
+[data-theme="dark"] .caja.vacio      { box-shadow: 0 0 6px rgba(248,81,73,0.5); }
+[data-theme="dark"] .caja.mantenimiento { box-shadow: 0 0 6px rgba(227,179,65,0.5); }
+.row-count { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text3); }
+.empty-state { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 14px; }
+
+.loading-bar {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--green) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+  margin-bottom: 20px; border-radius: 1px; display: none;
+}
+.loading-bar.active { display: block; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ─ breakpoints desktop responsive ─ */
+@media (max-width: 1200px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 960px)  { .kpis { grid-template-columns: repeat(3, 1fr); } .filtros-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ═══════════════════════════════════════════════════
+   MOBILE LAYOUT  (≤ 768px)
+═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #view-desktop { display: none !important; }
+  #view-mobile  { display: flex !important; flex-direction: column; min-height: 100vh; }
+}
+
+/* ── Mobile top bar ── */
+.m-topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.96);
+  border-bottom: 0.5px solid rgba(0,0,0,0.10);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 10px 16px 9px;
+  display: flex; align-items: center; gap: 10px;
+  transition: background 0.3s;
+}
+[data-theme="dark"] .m-topbar { background: rgba(22,27,34,0.96); border-color: rgba(255,255,255,0.08); }
+.m-topbar-logo img { height: 32px; object-fit: contain; display: block; }
+.m-topbar-titles { flex: 1; }
+.m-topbar-eyebrow { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.m-topbar-title   { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.1; }
+.m-theme-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--surface2); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; flex-shrink: 0;
+  transition: all 0.2s;
+}
+.m-theme-btn:hover { border-color: var(--blue); }
+
+/* ── Mobile scroll area ── */
+.m-scroll { flex: 1; overflow-y: auto; padding: 12px 12px 80px; -webkit-overflow-scrolling: touch; }
+
+/* ── Mobile fecha ── */
+.m-fecha-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: 12px;
+}
+.m-fecha-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 600; }
+.m-fecha-rdot-row { display: flex; align-items: center; gap: 5px; }
+
+/* ── Mobile KPI rows (deslizables) ── */
+.m-sec-label { font-size: 9.5px; font-weight: 600; letter-spacing: 1.3px; text-transform: uppercase; color: var(--text3); margin: 4px 2px 7px; }
+.m-kpi-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.m-kpi-row::-webkit-scrollbar { display: none; }
+
+.m-kpi {
+  flex-shrink: 0; width: 96px;
+  background: var(--surface); border-radius: 11px; border: 1px solid var(--border);
+  padding: 10px 11px 9px; position: relative; overflow: hidden;
+  transition: border-color 0.2s, transform 0.1s;
+}
+.m-kpi:active { transform: scale(0.97); }
+.m-kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2.5px; border-radius: 11px 11px 0 0; }
+.m-kpi-num { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.m-kpi-lbl { font-size: 9.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text3); line-height: 1.3; }
+
+/* Colores mobile KPIs — se heredan de las mismas vars */
+.mk-blue::before   { background: var(--blue); }   .mk-blue .m-kpi-num   { color: var(--blue); }
+.mk-gray::before   { background: var(--gray); }   .mk-gray .m-kpi-num   { color: var(--gray); }
+.mk-red::before    { background: var(--red); }    .mk-red  .m-kpi-num   { color: var(--red); }
+.mk-amber::before  { background: var(--amber); }  .mk-amber .m-kpi-num  { color: var(--amber); }
+.mk-cyan::before   { background: var(--cyan); }   .mk-cyan  .m-kpi-num  { color: var(--cyan); }
+.mk-green::before  { background: var(--green); }  .mk-green .m-kpi-num  { color: var(--green); }
+.mk-lime::before   { background: var(--lime); }   .mk-lime  .m-kpi-num  { color: var(--lime); }
+.mk-violet::before { background: var(--violet); } .mk-violet .m-kpi-num { color: var(--violet); }
+.mk-teal::before   { background: var(--teal); }   .mk-teal   .m-kpi-num { color: var(--teal); }
+.mk-orange::before { background: var(--orange); } .mk-orange .m-kpi-num { color: var(--orange); }
+.mk-pink::before   { background: var(--pink); }   .mk-pink   .m-kpi-num { color: var(--pink); }
+
+.mk-green.m-kpi { background: var(--green-bg); border-color: var(--green-border); }
+.mk-green .m-kpi-lbl { color: var(--green-text); }
+[data-theme="dark"] .mk-green .m-kpi-lbl { color: var(--green); }
+
+.m-kpi.clickable { cursor: pointer; }
+.m-kpi.clickable .m-kpi-lbl::after { content: ' ↗'; font-size: 8px; }
+
+/* ── Mobile relevos ── */
+.m-relevos {
+  background: var(--amber-bg); border: 1px solid var(--amber-border);
+  border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px; display: none;
+}
+.m-relevos.visible { display: block; }
+.m-relevos-title { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--amber-text); margin-bottom: 7px; }
+[data-theme="dark"] .m-relevos-title { color: var(--amber); }
+.m-relevos-list { display: flex; gap: 6px; flex-wrap: wrap; }
+.m-relevo-chip { font-size: 12px; font-weight: 500; color: var(--amber-text); background: rgba(255,255,255,0.5); border-radius: 6px; padding: 3px 9px; }
+[data-theme="dark"] .m-relevo-chip { background: rgba(255,255,255,0.08); color: var(--amber-text); }
+
+/* ── Mobile buscador / filtros ── */
+.m-filtros-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px;
+}
+.m-filtros-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.m-filtros-label { font-size: 9.5px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); }
+.m-filtros-clear { font-size: 11px; font-weight: 500; color: var(--red); background: var(--red-bg); padding: 3px 9px; border-radius: 6px; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; }
+.m-filtros-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.m-filtros-info { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 6px; }
+
+/* ── Mobile tabla ── */
+.m-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 8px; }
+.m-table { width: 100%; border-collapse: collapse; }
+.m-thead tr { background: var(--surface2); }
+.m-th { padding: 8px 10px; font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); text-align: left; border-bottom: 0.5px solid var(--border); white-space: nowrap; }
+.m-th:not(:first-child) { text-align: center; }
+.m-td { padding: 9px 10px; font-size: 13px; font-weight: 500; border-bottom: 0.5px solid rgba(0,0,0,0.05); color: var(--text2); }
+.m-tbody tr:last-child .m-td { border-bottom: none; }
+
+.m-row-d  { border-left: 3px solid var(--green); }
+.m-row-v  { border-left: 3px solid var(--red); }
+.m-row-c  { border-left: 3px solid var(--gray-border); }
+.m-row-m  { border-left: 3px solid var(--amber); }
+.m-row-d .m-td { background: var(--green-bg); color: var(--green-text); }
+.m-row-v .m-td { background: var(--red-bg); color: var(--red-text); }
+.m-row-c .m-td { background: var(--gray-bg); color: var(--gray-text); }
+.m-row-m .m-td { background: var(--amber-bg); color: var(--amber-text); }
+
+.m-td-name  { font-size: 13px; font-weight: 600; line-height: 1.2; }
+.m-td-sub   { font-size: 10.5px; margin-top: 1px; opacity: 0.75; }
+.m-badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
+.mb-d { background: #bbf7d0; color: #14532d; }
+.mb-v { background: #fecaca; color: #7f1d1d; }
+.mb-c { background: #e2e8f0; color: #334155; }
+.mb-m { background: #fde68a; color: #78350f; }
+
+.m-td-dest { font-size: 11.5px; font-weight: 500; text-align: center; }
+.m-td-today { text-align: center; font-size: 15px; }
+
+.m-table-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 12px; background: var(--surface2); border-top: 0.5px solid var(--border); gap: 8px;
+}
+.m-ley { display: flex; gap: 10px; flex-wrap: wrap; }
+.m-li  { display: flex; align-items: center; gap: 4px; font-size: 9px; text-transform: uppercase; color: var(--text3); font-weight: 500; }
+.m-ld  { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.m-cnt { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); }
+.m-empty { text-align: center; padding: 32px 16px; color: var(--text3); font-size: 13px; }
+
+/* ── Mobile loading bar ── */
+.m-loading-bar {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--green) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+  margin-bottom: 12px; border-radius: 1px; display: none;
+}
+.m-loading-bar.active { display: block; }
+
+/* ── Mobile bottom nav ── */
+.m-bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(255,255,255,0.97);
+  border-top: 0.5px solid rgba(0,0,0,0.10);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  display: flex; padding: 8px 0 env(safe-area-inset-bottom, 8px);
+  transition: background 0.3s;
+}
+[data-theme="dark"] .m-bottom-nav { background: rgba(22,27,34,0.97); border-color: rgba(255,255,255,0.08); }
+.m-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 2px 0; user-select: none; }
+.m-nav-lbl { font-size: 10px; font-weight: 500; color: var(--text3); letter-spacing: 0.2px; }
+.m-nav-item.active .m-nav-lbl { color: var(--green); }
+.m-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--green); }
+.m-nav-icon { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
+.m-nav-icon svg { display: block; }
+
+/* ── Detalle de fila (modal mobile) ── */
+.m-detail-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: flex-end;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.m-detail-overlay.open { opacity: 1; pointer-events: all; }
+.m-detail-sheet {
+  width: 100%; background: var(--surface);
+  border-radius: 20px 20px 0 0;
+  padding: 16px 18px 36px;
+  transform: translateY(100%); transition: transform 0.3s ease;
+  max-height: 85vh; overflow-y: auto;
+}
+.m-detail-overlay.open .m-detail-sheet { transform: translateY(0); }
+.m-detail-handle { width: 40px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto 14px; }
+.m-detail-status { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; padding: 4px 12px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+.m-detail-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.m-detail-sub { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
+.m-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.m-detail-field { background: var(--surface2); border-radius: var(--radius-sm); padding: 9px 11px; }
+.m-detail-field-lbl { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 3px; }
+.m-detail-field-val { font-size: 14px; font-weight: 500; color: var(--text); }
+.m-detail-field.full { grid-column: 1 / -1; }
+.m-detail-close { width: 100%; margin-top: 14px; padding: 12px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; color: var(--text2); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+/* ═══════════════════════════════════════════════════
+   IMPRESIÓN — A4 horizontal, 1 sola hoja
+═══════════════════════════════════════════════════ */
+@media print {
+  @page { size: A4 landscape; margin: 4mm 5mm; }
+
+  #view-mobile, body::before, .theme-toggle, .header-left, .header-right,
+  .divider, .kpis, .filtros-panel, .acciones, .table-footer,
+  .relevos-panel, .refresh-info, .loading-bar { display: none !important; }
+
+  #view-desktop { display: block !important; padding: 0 !important; }
+  body { background: white !important; padding: 0 !important; }
+
+  .container {
+    box-shadow: none !important; padding: 3mm 3mm 4mm !important;
+    border: none !important; background: white !important;
+    border-radius: 0 !important; max-width: 100% !important;
+  }
+  .header {
+    display: flex !important; flex-direction: column !important;
+    align-items: center !important; gap: 2mm !important;
+    margin-bottom: 3mm !important; padding-right: 0 !important;
+  }
+  .header-center { width: 100% !important; justify-content: center !important; }
+  .logo-wrap img { max-height: 13mm !important; }
+  #print-fecha { display: block !important; font-size: 7.5pt; color: #555; text-align: center; margin-bottom: 2mm; font-family: monospace; }
+
+  .table-wrap { border: 0.5pt solid #ccc !important; border-radius: 0 !important; box-shadow: none !important; overflow: visible !important; }
+  .table-container { overflow: visible !important; }
+  table { width: 100% !important; border-collapse: collapse !important; table-layout: fixed; }
+  thead tr { background: #1e293b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  th {
+    padding: 2px 3px !important; font-size: 6pt !important; color: white !important;
+    background: #1e293b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    white-space: normal !important; border-bottom: none !important; word-break: break-word;
+  }
+  td { padding: 2px 3px !important; font-size: 7pt !important; border-bottom: 0.3pt solid #e2e8f0 !important; white-space: normal !important; word-break: break-word; }
+  th[data-col="ACTUALIZADO HOY?"], td[data-col="ACTUALIZADO HOY?"] { width: 5% !important; min-width: unset !important; max-width: unset !important; text-align: center !important; font-size: 9pt !important; }
+  tr.disponible td    { background: #bbf7d0 !important; color: #14532d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr.vacio td         { background: #fecaca !important; color: #7f1d1d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr.cargado td       { background: #e2e8f0 !important; color: #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr.mantenimiento td { background: #fde68a !important; color: #78350f !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr.disponible td:first-child    { border-left: 2pt solid #16a34a !important; }
+  tr.vacio td:first-child         { border-left: 2pt solid #dc2626 !important; }
+  tr.cargado td:first-child       { border-left: 2pt solid #94a3b8 !important; }
+  tr.mantenimiento td:first-child { border-left: 2pt solid #d97706 !important; }
+  tbody tr:hover td { filter: none !important; }
+  th.col-hide, td.col-hide { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     VISTA DESKTOP
+════════════════════════════════════ -->
+<div id="view-desktop">
+<div class="container">
+
+  <button class="theme-toggle" onclick="toggleTheme()">
+    <span id="themeIcon">🌙</span>
+    <span id="themeLabel">Modo oscuro</span>
+  </button>
+
+  <div class="loading-bar active" id="loadingBar"></div>
+
+  <div class="header">
+    <div class="header-left">
+      <div class="header-eyebrow">Estado de Flota</div>
+      <h1>EXPOVERDE 2026</h1>
+    </div>
+    <div class="header-center">
+      <div class="logo-wrap"><img src="Logo___EXPOVERDE.png" alt="Expoverde"></div>
+    </div>
+    <div class="header-right">
+      <div class="ultima-act-label">Última modificación del sheet</div>
+      <div id="ultima-act">Cargando…</div>
+      <div class="refresh-info">
+        <div class="rdot"></div>
+        <span id="refresh-cd">actualizando en 60s</span>
+      </div>
+    </div>
+  </div>
+  <div id="print-fecha" style="display:none;"></div>
+
+  <div class="divider"></div>
+
+  <!-- KPIs — fila 1 -->
+  <div class="kpis">
+    <div class="kpi kpi-total">
+      <div class="kpi-num" id="kpiTotalNum">—</div>
+      <div class="kpi-label">Unidades totales</div>
+    </div>
+    <div class="kpi kpi-cargados">
+      <div class="kpi-num" id="kpiCargadosNum">—</div>
+      <div class="kpi-label">Cargados en total</div>
+    </div>
+    <div class="kpi kpi-vacios kpi-clickable" onclick="filtrarKpi('CLIENTE','VACIO')">
+      <div class="kpi-num" id="kpiVacioNum">—</div>
+      <div class="kpi-label">Vacíos fuera de Mendoza</div>
+    </div>
+    <div class="kpi kpi-mantenimiento kpi-clickable" onclick="filtrarKpi('CLIENTE','MANTENIMIENTO')">
+      <div class="kpi-num" id="kpiMantNum">—</div>
+      <div class="kpi-label">En mantenimiento</div>
+    </div>
+    <div class="kpi kpi-desde-chile kpi-clickable" onclick="filtrarKpi('ORIGEN','CHILE')">
+      <div class="kpi-num" id="kpiDesdechileNum">—</div>
+      <div class="kpi-label">Internacionales desde Chile</div>
+    </div>
+    <!-- KPIs — fila 2 -->
+    <div class="kpi kpi-mendoza kpi-clickable" onclick="filtrarMendoza()">
+      <div class="kpi-num" id="kpiMendozaNum">—</div>
+      <div class="kpi-label">Disponibles en Mendoza</div>
+    </div>
+    <div class="kpi kpi-mza-destino kpi-clickable" onclick="filtrarKpiMzaDest()">
+      <div class="kpi-num" id="kpiMzaDestinoNum">—</div>
+      <div class="kpi-label">Con destino a Mendoza</div>
+    </div>
+    <div class="kpi kpi-cordoba kpi-clickable" onclick="filtrarKpi('DESTINO','CORDOBA')">
+      <div class="kpi-num" id="kpiCordobaNum">—</div>
+      <div class="kpi-label">Con destino a Córdoba</div>
+    </div>
+    <div class="kpi kpi-bsas kpi-clickable" onclick="filtrarKpi('DESTINO','BUENOS AIRES')">
+      <div class="kpi-num" id="kpiBsasNum">—</div>
+      <div class="kpi-label">Con destino a Buenos Aires</div>
+    </div>
+    <div class="kpi kpi-neuquen kpi-clickable" onclick="filtrarKpi('DESTINO','NEUQUEN')">
+      <div class="kpi-num" id="kpiNeuquenNum">—</div>
+      <div class="kpi-label">Con destino a Neuquén</div>
+    </div>
+    <div class="kpi kpi-chile kpi-clickable" onclick="filtrarKpi('DESTINO','CHILE')">
+      <div class="kpi-num" id="kpiChileNum">—</div>
+      <div class="kpi-label">Internacionales a Chile</div>
+    </div>
+  </div>
+
+  <!-- Panel relevos desktop -->
+  <div class="relevos-panel" id="relevosPanel">
+    <div class="relevos-header">
+      <span style="font-size:16px;">🔄</span>
+      <div class="relevos-title">Choferes de relevo — no afectan KPIs ni totales</div>
+    </div>
+    <div class="relevos-chips" id="relevosChips"></div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-panel">
+    <div class="filtros-title">Filtros</div>
+    <div class="filtros-grid" id="filtros"></div>
+  </div>
+
+  <!-- Acciones -->
+  <div class="acciones">
+    <button class="btn btn-limpiar" onclick="limpiarFiltros()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 3l10 10M13 3L3 13"/></svg>
+      Limpiar filtros
+    </button>
+    <button class="btn btn-imprimir" onclick="imprimir()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="1" width="10" height="5" rx="1"/><rect x="1" y="6" width="14" height="6" rx="1"/><rect x="4" y="10" width="8" height="5" rx="1"/><circle cx="12" cy="9" r="1" fill="currentColor" stroke="none"/></svg>
+      Imprimir vista actual
+    </button>
+    <span class="filtros-activos-info" id="filtrosInfo"></span>
+  </div>
+
+  <!-- Tabla desktop -->
+  <div class="table-wrap">
+    <div class="table-container">
+      <table>
+        <colgroup id="colgroup"></colgroup>
+        <thead id="thead"></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <div class="leyenda">
+        <div class="leyenda-item"><div class="caja disponible"></div> Disponible</div>
+        <div class="leyenda-item"><div class="caja vacio"></div> Vacío</div>
+        <div class="leyenda-item"><div class="caja cargado"></div> Cargado</div>
+        <div class="leyenda-item"><div class="caja mantenimiento"></div> Mantenimiento</div>
+      </div>
+      <div class="row-count" id="rowCount"></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+</div><!-- /view-desktop -->
+
+
+<!-- ════════════════════════════════════
+     VISTA MOBILE
+════════════════════════════════════ -->
+<div id="view-mobile">
+
+  <!-- Top bar -->
+  <div class="m-topbar">
+    <div class="m-topbar-logo"><img src="Logo___EXPOVERDE.png" alt="Expoverde"></div>
+    <div class="m-topbar-titles">
+      <div class="m-topbar-eyebrow">Estado de Flota</div>
+      <div class="m-topbar-title">EXPOVERDE 2026</div>
+    </div>
+    <button class="m-theme-btn" onclick="toggleTheme()" id="mThemeBtn">🌙</button>
+  </div>
+
+  <!-- Scroll area -->
+  <div class="m-scroll" id="m-scroll">
+
+    <div class="m-loading-bar" id="mLoadingBar"></div>
+
+    <!-- Fecha + refresh -->
+    <div class="m-fecha-row">
+      <div>
+        <div class="m-fecha-label">Última modificación</div>
+        <div id="m-ultima-act" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);margin-top:2px;">Cargando…</div>
+      </div>
+      <div class="m-fecha-rdot-row">
+        <div class="rdot"></div>
+        <span style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;" id="m-refresh-cd">60s</span>
+      </div>
+    </div>
+
+    <!-- KPI fila 1 -->
+    <div class="m-sec-label">Flota general</div>
+    <div class="m-kpi-row">
+      <div class="m-kpi mk-blue"><div class="m-kpi-num" id="m-kpiTotalNum">—</div><div class="m-kpi-lbl">Total</div></div>
+      <div class="m-kpi mk-gray"><div class="m-kpi-num" id="m-kpiCargadosNum">—</div><div class="m-kpi-lbl">Cargados</div></div>
+      <div class="m-kpi mk-red clickable" onclick="mFiltrarKpi('CLIENTE','VACIO')"><div class="m-kpi-num" id="m-kpiVacioNum">—</div><div class="m-kpi-lbl">Vacíos</div></div>
+      <div class="m-kpi mk-amber clickable" onclick="mFiltrarKpi('CLIENTE','MANTENIMIENTO')"><div class="m-kpi-num" id="m-kpiMantNum">—</div><div class="m-kpi-lbl">Mantenim.</div></div>
+      <div class="m-kpi mk-cyan clickable" onclick="mFiltrarKpi('ORIGEN','CHILE')"><div class="m-kpi-num" id="m-kpiDesdechileNum">—</div><div class="m-kpi-lbl">Desde Chile</div></div>
+    </div>
+
+    <!-- KPI fila 2 -->
+    <div class="m-sec-label">Por destino</div>
+    <div class="m-kpi-row">
+      <div class="m-kpi mk-green clickable" onclick="mFiltrarMendoza()"><div class="m-kpi-num" id="m-kpiMendozaNum">—</div><div class="m-kpi-lbl">Disp. Mza</div></div>
+      <div class="m-kpi mk-lime clickable" onclick="mFiltrarMzaDest()"><div class="m-kpi-num" id="m-kpiMzaDestinoNum">—</div><div class="m-kpi-lbl">A Mendoza</div></div>
+      <div class="m-kpi mk-violet clickable" onclick="mFiltrarKpi('DESTINO','CORDOBA')"><div class="m-kpi-num" id="m-kpiCordobaNum">—</div><div class="m-kpi-lbl">Córdoba</div></div>
+      <div class="m-kpi mk-teal clickable" onclick="mFiltrarKpi('DESTINO','BUENOS AIRES')"><div class="m-kpi-num" id="m-kpiBsasNum">—</div><div class="m-kpi-lbl">Bs. Aires</div></div>
+      <div class="m-kpi mk-orange clickable" onclick="mFiltrarKpi('DESTINO','NEUQUEN')"><div class="m-kpi-num" id="m-kpiNeuquenNum">—</div><div class="m-kpi-lbl">Neuquén</div></div>
+      <div class="m-kpi mk-pink clickable" onclick="mFiltrarKpi('DESTINO','CHILE')"><div class="m-kpi-num" id="m-kpiChileNum">—</div><div class="m-kpi-lbl">A Chile</div></div>
+    </div>
+
+    <!-- Relevos mobile -->
+    <div class="m-relevos" id="mRelevos">
+      <div class="m-relevos-title">🔄 Choferes de relevo</div>
+      <div class="m-relevos-list" id="mRelecosList"></div>
+    </div>
+
+    <!-- Filtros mobile -->
+    <div class="m-filtros-panel">
+      <div class="m-filtros-head">
+        <div class="m-filtros-label">Filtros</div>
+        <button class="m-filtros-clear" onclick="mLimpiarFiltros()">Limpiar</button>
+      </div>
+      <div class="m-filtros-grid" id="m-filtros"></div>
+      <div class="m-filtros-info" id="m-filtrosInfo"></div>
+    </div>
+
+    <!-- Tabla mobile -->
+    <div class="m-table-wrap">
+      <table class="m-table">
+        <thead class="m-thead" id="m-thead"></thead>
+        <tbody id="m-tbody"></tbody>
+      </table>
+      <div class="m-table-foot">
+        <div class="m-ley">
+          <div class="m-li"><div class="m-ld" style="background:var(--green);"></div>Disp.</div>
+          <div class="m-li"><div class="m-ld" style="background:var(--red);"></div>Vacío</div>
+          <div class="m-li"><div class="m-ld" style="background:var(--gray-border);"></div>Cargado</div>
+          <div class="m-li"><div class="m-ld" style="background:var(--amber);"></div>Mant.</div>
+        </div>
+        <div class="m-cnt" id="m-rowCount"></div>
+      </div>
+    </div>
+
+  </div><!-- /m-scroll -->
+
+  <!-- Bottom nav -->
+  <div class="m-bottom-nav">
+    <div class="m-nav-item active" id="mnav-dash">
+      <div class="m-nav-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--green)" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/></svg>
+      </div>
+      <div class="m-nav-lbl" style="color:var(--green);">Dashboard</div>
+      <div class="m-nav-dot"></div>
+    </div>
+    <div class="m-nav-item" id="mnav-nacional" onclick="alert('Módulo Datos Nacional — próximamente')">
+      <div class="m-nav-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--text3)" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h14M4 11h14M4 15h9"/><circle cx="18" cy="15" r="2.5"/></svg>
+      </div>
+      <div class="m-nav-lbl">Nacional</div>
+    </div>
+    <div class="m-nav-item" id="mnav-chile" onclick="alert('Módulo Datos Chile — próximamente')">
+      <div class="m-nav-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--text3)" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7.5"/><path d="M11 3.5c-2.5 2-3.5 5-3.5 7.5s1 5.5 3.5 7.5M11 3.5c2.5 2 3.5 5 3.5 7.5s-1 5.5-3.5 7.5M3.5 11h15"/></svg>
+      </div>
+      <div class="m-nav-lbl">Chile</div>
+    </div>
+  </div>
+
+  <!-- Sheet de detalle de fila -->
+  <div class="m-detail-overlay" id="mDetailOverlay" onclick="cerrarDetalle(event)">
+    <div class="m-detail-sheet" id="mDetailSheet">
+      <div class="m-detail-handle"></div>
+      <div id="mDetailContent"></div>
+      <button class="m-detail-close" onclick="cerrarDetalle()">Cerrar</button>
+    </div>
+  </div>
+
+</div><!-- /view-mobile -->
+
+
+<script>
+/* ════════════════════════════════════════════════════
+   CONFIGURACIÓN
+════════════════════════════════════════════════════ */
+const SHEET_ID    = "1gvbQtOUJoM64tOn4uUBTI0cvpFa8EHOU";
+const API_KEY     = "AIzaSyCQv1cRCtgTWv8MZ8MWogKryUpXh8fdH-U";
+const SHEET_URL   = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/export?format=csv&gid=855031501";
+const ORDEN_COL   = "ORDEN";
+const HOY_COL     = "ACTUALIZADO HOY?";
+const REFRESH_SEG = 60;
+
+// Un chofer es "relevo" si el campo INTERNO está vacío
+const esRelevo = r => !(r["INTERNO"] || "").trim();
+
+/* ════════════════════════════════════════════════════
+   ESTADO GLOBAL
+════════════════════════════════════════════════════ */
+let datos = [], columnas = [], filtrosActivos = {};
+let mFiltrosActivos = {};
+let refreshTimer = null, countdown = REFRESH_SEG;
+let datosCache = []; // caché completo para detalle mobile
+
+/* ════════════════════════════════════════════════════
+   TEMA
+════════════════════════════════════════════════════ */
+function toggleTheme() {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  if (dark) {
+    document.documentElement.removeAttribute("data-theme");
+    document.getElementById("themeIcon").textContent   = "🌙";
+    document.getElementById("themeLabel").textContent  = "Modo oscuro";
+    document.getElementById("mThemeBtn").textContent   = "🌙";
+    localStorage.setItem("ev_theme", "light");
+  } else {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("themeIcon").textContent   = "☀️";
+    document.getElementById("themeLabel").textContent  = "Modo claro";
+    document.getElementById("mThemeBtn").textContent   = "☀️";
+    localStorage.setItem("ev_theme", "dark");
+  }
+}
+(function applyTheme() {
+  if (localStorage.getItem("ev_theme") === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("themeIcon").textContent   = "☀️";
+    document.getElementById("themeLabel").textContent  = "Modo claro";
+    document.getElementById("mThemeBtn").textContent   = "☀️";
+  }
+})();
+
+/* ════════════════════════════════════════════════════
+   REFRESH AUTOMÁTICO
+════════════════════════════════════════════════════ */
+function iniciarRefresh() {
+  clearInterval(refreshTimer);
+  countdown = REFRESH_SEG;
+  refreshTimer = setInterval(() => {
+    countdown--;
+    const cd1 = document.getElementById("refresh-cd");
+    const cd2 = document.getElementById("m-refresh-cd");
+    if (cd1) cd1.textContent = "actualizando en " + countdown + "s";
+    if (cd2) cd2.textContent = countdown + "s";
+    if (countdown <= 0) {
+      countdown = REFRESH_SEG;
+      cargar(true);
+      obtenerFechaModificacion();
+    }
+  }, 1000);
+}
+
+/* ════════════════════════════════════════════════════
+   IMPRIMIR (desktop — todas las columnas)
+════════════════════════════════════════════════════ */
+function imprimir() {
+  const ahora = new Date();
+  const p = n => String(n).padStart(2, "0");
+  document.getElementById("print-fecha").textContent =
+    "Impreso el " + p(ahora.getDate()) + "/" + p(ahora.getMonth()+1) + "/" + ahora.getFullYear()
+    + " a las " + p(ahora.getHours()) + ":" + p(ahora.getMinutes());
+  document.querySelectorAll("#thead th, #tbody td").forEach(c => c.classList.remove("col-hide"));
+  window.print();
+}
+
+/* ════════════════════════════════════════════════════
+   FECHA DEL SHEET (Google Drive API)
+════════════════════════════════════════════════════ */
+async function obtenerFechaModificacion() {
+  const ids = ["ultima-act", "m-ultima-act"];
+  try {
+    const r = await fetch("https://www.googleapis.com/drive/v3/files/" + SHEET_ID + "?fields=modifiedTime&key=" + API_KEY);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const json = await r.json();
+    if (!json.modifiedTime) throw new Error("sin modifiedTime");
+    const d  = new Date(json.modifiedTime);
+    const ar = new Date(d.getTime() - 3 * 60 * 60 * 1000);
+    const p  = n => String(n).padStart(2, "0");
+    const txt = p(ar.getUTCDate()) + "/" + p(ar.getUTCMonth()+1) + "/" + ar.getUTCFullYear()
+      + "  " + p(ar.getUTCHours()) + ":" + p(ar.getUTCMinutes());
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = txt; el.classList.remove("error"); }
+    });
+  } catch(e) {
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = "No disponible"; el.classList.add("error"); el.title = String(e); }
+    });
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   PARSEAR CSV
+════════════════════════════════════════════════════ */
+function parseCSV(text) {
+  return text.split("\n").map(line => {
+    const row = []; let cur = "", inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; continue; }
+      if (c === ',' && !inQ) { row.push(cur.trim()); cur = ""; continue; }
+      cur += c;
+    }
+    row.push(cur.trim()); return row;
+  });
+}
+
+/* ════════════════════════════════════════════════════
+   CARGAR DATOS
+════════════════════════════════════════════════════ */
+async function cargar(silencioso = false) {
+  if (!silencioso) {
+    document.getElementById("loadingBar").classList.add("active");
+    document.getElementById("mLoadingBar").classList.add("active");
+  }
+  try {
+    const res  = await fetch(SHEET_URL + "&t=" + Date.now());
+    const text = await res.text();
+    const filas = parseCSV(text);
+    columnas = filas[0].map(c => c.replace(/\r/g,'').trim());
+
+    const todos = filas.slice(1).filter(f => f.some(c => c.trim())).map(fila => {
+      const obj = {};
+      columnas.forEach((col, i) => obj[col] = (fila[i]||"").replace(/\r/g,'').trim());
+      return obj;
+    });
+
+    const relevos = todos.filter(esRelevo);
+    datos = todos.filter(r => !esRelevo(r));
+    datosCache = datos;
+
+    columnas.forEach(col => {
+      if (!(col in filtrosActivos))  filtrosActivos[col]  = "";
+      if (!(col in mFiltrosActivos)) mFiltrosActivos[col] = "";
+    });
+
+    mostrarRelevosDesktop(relevos);
+    mostrarRelecosMobile(relevos);
+    crearFiltros();
+    crearFiltrosMobile();
+    aplicarFiltros();
+    aplicarFiltrosMobile();
+  } catch(e) {
+    if (!silencioso) {
+      document.getElementById("tbody").innerHTML = '<tr><td colspan="99" class="empty-state">Error al cargar los datos.</td></tr>';
+      document.getElementById("m-tbody").innerHTML = '<tr><td colspan="4" class="m-empty">Error al cargar los datos.</td></tr>';
+    }
+  }
+  if (!silencioso) {
+    document.getElementById("loadingBar").classList.remove("active");
+    document.getElementById("mLoadingBar").classList.remove("active");
+  }
+}
+
+/* ════════════════════════════════════════════════════
+   RELEVOS
+════════════════════════════════════════════════════ */
+function mostrarRelevosDesktop(relevos) {
+  const panel = document.getElementById("relevosPanel");
+  const chips = document.getElementById("relevosChips");
+  if (!relevos.length) { panel.classList.remove("visible"); return; }
+  panel.classList.add("visible");
+  chips.innerHTML = relevos.map(r =>
+    '<div class="relevo-chip"><div><div style="font-size:13px;font-weight:600;">' + (r["CHOFER"]||"Sin nombre") + '</div><div class="relevo-chip-label">Chofer de relevo</div></div></div>'
+  ).join("");
+}
+function mostrarRelecosMobile(relevos) {
+  const panel = document.getElementById("mRelevos");
+  const list  = document.getElementById("mRelecosList");
+  if (!relevos.length) { panel.classList.remove("visible"); return; }
+  panel.classList.add("visible");
+  list.innerHTML = relevos.map(r => '<div class="m-relevo-chip">' + (r["CHOFER"]||"Sin nombre") + '</div>').join("");
+}
+
+/* ════════════════════════════════════════════════════
+   ACCESOS DIRECTOS DESKTOP
+════════════════════════════════════════════════════ */
+function filtrarMendoza() {
+  Object.keys(filtrosActivos).forEach(k => filtrosActivos[k] = "");
+  filtrosActivos["CLIENTE"] = "DISPONIBLE"; filtrosActivos["DESTINO"] = "MENDOZA";
+  crearFiltros(); aplicarFiltros();
+}
+function filtrarKpiMzaDest() {
+  Object.keys(filtrosActivos).forEach(k => filtrosActivos[k] = "");
+  filtrosActivos["DESTINO"] = "MENDOZA";
+  crearFiltros(); aplicarFiltros();
+}
+function filtrarKpi(col, val) {
+  Object.keys(filtrosActivos).forEach(k => filtrosActivos[k] = "");
+  filtrosActivos[col] = val;
+  crearFiltros(); aplicarFiltros();
+}
+
+/* ════════════════════════════════════════════════════
+   ACCESOS DIRECTOS MOBILE
+════════════════════════════════════════════════════ */
+function mFiltrarMendoza() {
+  Object.keys(mFiltrosActivos).forEach(k => mFiltrosActivos[k] = "");
+  mFiltrosActivos["CLIENTE"] = "DISPONIBLE"; mFiltrosActivos["DESTINO"] = "MENDOZA";
+  crearFiltrosMobile(); aplicarFiltrosMobile();
+}
+function mFiltrarMzaDest() {
+  Object.keys(mFiltrosActivos).forEach(k => mFiltrosActivos[k] = "");
+  mFiltrosActivos["DESTINO"] = "MENDOZA";
+  crearFiltrosMobile(); aplicarFiltrosMobile();
+}
+function mFiltrarKpi(col, val) {
+  Object.keys(mFiltrosActivos).forEach(k => mFiltrosActivos[k] = "");
+  mFiltrosActivos[col] = val;
+  crearFiltrosMobile(); aplicarFiltrosMobile();
+}
+
+/* ════════════════════════════════════════════════════
+   CUSTOM SELECT (desktop)
+════════════════════════════════════════════════════ */
+function crearCustomSelect(col, valores, activos, onChange) {
+  const wrap = document.createElement("div");
+  wrap.className = "custom-select-wrap";
+  const trigger = document.createElement("div");
+  trigger.className = "custom-select-trigger" + (activos[col] ? " has-value" : "");
+  trigger.innerHTML = '<span class="trigger-text">' + (activos[col] || col) + '</span>'
+    + '<svg class="trigger-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>';
+  const dropdown = document.createElement("div");
+  dropdown.className = "custom-select-dropdown";
+  const search = document.createElement("input");
+  search.type = "text"; search.className = "custom-select-search";
+  search.placeholder = "Buscar " + col + "…"; search.autocomplete = "off";
+  const list = document.createElement("div");
+  list.className = "custom-select-list";
+  const none = document.createElement("div");
+  none.className = "custom-option custom-option-none" + (!activos[col] ? " selected" : "");
+  none.dataset.value = ""; none.textContent = "Todos";
+  list.appendChild(none);
+  valores.forEach(v => {
+    const opt = document.createElement("div");
+    opt.className = "custom-option" + (activos[col] === v ? " selected" : "");
+    opt.dataset.value = v; opt.textContent = v;
+    list.appendChild(opt);
+  });
+  dropdown.appendChild(search); dropdown.appendChild(list);
+  wrap.appendChild(trigger); wrap.appendChild(dropdown);
+  search.addEventListener("input", () => {
+    const q = search.value.toLowerCase();
+    list.querySelectorAll(".custom-option:not(.custom-option-none)").forEach(o =>
+      o.classList.toggle("hidden", !o.textContent.toLowerCase().includes(q)));
+  });
+  list.addEventListener("click", e => {
+    const opt = e.target.closest(".custom-option");
+    if (!opt) return;
+    const val = opt.dataset.value;
+    activos[col] = val;
+    trigger.querySelector(".trigger-text").textContent = val || col;
+    trigger.className = "custom-select-trigger" + (val ? " has-value" : "");
+    list.querySelectorAll(".custom-option").forEach(o => o.classList.remove("selected"));
+    opt.classList.add("selected");
+    closeDropdown(wrap); onChange();
+  });
+  trigger.addEventListener("click", e => {
+    e.stopPropagation();
+    const open = dropdown.classList.contains("open");
+    closeAllDropdowns();
+    if (!open) {
+      dropdown.classList.add("open"); trigger.classList.add("active");
+      search.value = "";
+      list.querySelectorAll(".custom-option").forEach(o => o.classList.remove("hidden"));
+      setTimeout(() => search.focus(), 40);
+    }
+  });
+  return wrap;
+}
+function closeDropdown(w) {
+  w.querySelector(".custom-select-dropdown").classList.remove("open");
+  w.querySelector(".custom-select-trigger").classList.remove("active");
+}
+function closeAllDropdowns() {
+  document.querySelectorAll(".custom-select-dropdown.open").forEach(d => {
+    d.classList.remove("open");
+    d.closest(".custom-select-wrap").querySelector(".custom-select-trigger").classList.remove("active");
+  });
+}
+document.addEventListener("click", closeAllDropdowns);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeAllDropdowns(); });
+
+/* ════════════════════════════════════════════════════
+   FILTROS DESKTOP
+════════════════════════════════════════════════════ */
+function crearFiltros() {
+  const cont = document.getElementById("filtros");
+  cont.innerHTML = "";
+  columnas.forEach(col => {
+    if (col === ORDEN_COL || col === HOY_COL) return;
+    const vals = [...new Set(datos.map(d => d[col]).filter(v => v))].sort();
+    cont.appendChild(crearCustomSelect(col, vals, filtrosActivos, aplicarFiltros));
+  });
+}
+function limpiarFiltros() {
+  Object.keys(filtrosActivos).forEach(k => filtrosActivos[k] = "");
+  crearFiltros(); aplicarFiltros();
+}
+
+/* ════════════════════════════════════════════════════
+   FILTROS MOBILE (selects nativos — más cómodo en táctil)
+════════════════════════════════════════════════════ */
+function crearFiltrosMobile() {
+  const cont = document.getElementById("m-filtros");
+  cont.innerHTML = "";
+  columnas.forEach(col => {
+    if (col === ORDEN_COL || col === HOY_COL) return;
+    const vals = [...new Set(datos.map(d => d[col]).filter(v => v))].sort();
+    const sel = document.createElement("select");
+    sel.style.cssText = "width:100%;padding:8px 6px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;-webkit-appearance:none;appearance:none;cursor:pointer;";
+    sel.innerHTML = '<option value="">' + col + '</option>'
+      + vals.map(v => '<option value="' + v + '"' + (mFiltrosActivos[col] === v ? " selected" : "") + '>' + v + '</option>').join("");
+    sel.addEventListener("change", () => { mFiltrosActivos[col] = sel.value; aplicarFiltrosMobile(); });
+    cont.appendChild(sel);
+  });
+}
+function mLimpiarFiltros() {
+  Object.keys(mFiltrosActivos).forEach(k => mFiltrosActivos[k] = "");
+  crearFiltrosMobile(); aplicarFiltrosMobile();
+}
+
+/* ════════════════════════════════════════════════════
+   APLICAR FILTROS DESKTOP
+════════════════════════════════════════════════════ */
+function aplicarFiltros() {
+  let f = datos;
+  Object.keys(filtrosActivos).forEach(col => {
+    if (filtrosActivos[col]) f = f.filter(d => d[col] === filtrosActivos[col]);
+  });
+  const mendozaDisp = (filtrosActivos["CLIENTE"]||"").includes("DISPONIBLE") && (filtrosActivos["DESTINO"]||"") === "MENDOZA";
+  if (mendozaDisp && columnas.includes(ORDEN_COL))
+    f = [...f].sort((a,b) => (parseInt(a[ORDEN_COL])||9999) - (parseInt(b[ORDEN_COL])||9999));
+  const n = Object.values(filtrosActivos).filter(v => v).length;
+  document.getElementById("filtrosInfo").textContent = n > 0 ? n + " filtro" + (n > 1 ? "s" : "") + " activo" + (n > 1 ? "s" : "") : "";
+  actualizarKPIs(f);
+  renderDesktop(f, mendozaDisp);
+}
+
+/* ════════════════════════════════════════════════════
+   APLICAR FILTROS MOBILE
+════════════════════════════════════════════════════ */
+function aplicarFiltrosMobile() {
+  let f = datos;
+  Object.keys(mFiltrosActivos).forEach(col => {
+    if (mFiltrosActivos[col]) f = f.filter(d => d[col] === mFiltrosActivos[col]);
+  });
+  const n = Object.values(mFiltrosActivos).filter(v => v).length;
+  const info = document.getElementById("m-filtrosInfo");
+  if (info) info.textContent = n > 0 ? n + " filtro" + (n > 1 ? "s" : "") + " activo" + (n > 1 ? "s" : "") : "";
+  renderMobile(f);
+}
+
+/* ════════════════════════════════════════════════════
+   KPIs (siempre sobre totales sin filtro)
+════════════════════════════════════════════════════ */
+function actualizarKPIs(dataFiltrada) {
+  // Fila 1 (responden al filtro activo)
+  const set = (id1, id2, val) => {
+    [id1, id2].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = val; });
+  };
+  set("kpiTotalNum",       "m-kpiTotalNum",       dataFiltrada.length);
+  set("kpiCargadosNum",    "m-kpiCargadosNum",    dataFiltrada.filter(d => { const c = (d["CLIENTE"]||"").toUpperCase(); return !c.includes("DISPONIBLE") && !c.includes("VACIO") && !c.includes("MANTENIMIENTO"); }).length);
+  set("kpiVacioNum",       "m-kpiVacioNum",       dataFiltrada.filter(d => (d["CLIENTE"]||"").toUpperCase().includes("VACIO")).length);
+  set("kpiMantNum",        "m-kpiMantNum",        dataFiltrada.filter(d => (d["CLIENTE"]||"").toUpperCase().includes("MANTENIMIENTO")).length);
+  // Fila 2 (siempre total general)
+  set("kpiMendozaNum",     "m-kpiMendozaNum",     datos.filter(d => (d["CLIENTE"]||"").toUpperCase().includes("DISPONIBLE") && (d["DESTINO"]||"").toUpperCase() === "MENDOZA").length);
+  set("kpiMzaDestinoNum",  "m-kpiMzaDestinoNum",  datos.filter(d => { const dest = (d["DESTINO"]||"").toUpperCase(); const cli = (d["CLIENTE"]||"").toUpperCase(); return dest === "MENDOZA" && !cli.includes("DISPONIBLE") && !cli.includes("MANTENIMIENTO"); }).length);
+  set("kpiCordobaNum",     "m-kpiCordobaNum",     datos.filter(d => (d["DESTINO"]||"").toUpperCase() === "CORDOBA").length);
+  set("kpiBsasNum",        "m-kpiBsasNum",        datos.filter(d => (d["DESTINO"]||"").toUpperCase() === "BUENOS AIRES").length);
+  set("kpiNeuquenNum",     "m-kpiNeuquenNum",     datos.filter(d => (d["DESTINO"]||"").toUpperCase() === "NEUQUEN").length);
+  set("kpiChileNum",       "m-kpiChileNum",       datos.filter(d => (d["DESTINO"]||"").toUpperCase() === "CHILE").length);
+  set("kpiDesdechileNum",  "m-kpiDesdechileNum",  datos.filter(d => (d["ORIGEN"]||"").toUpperCase() === "CHILE").length);
+}
+
+/* ════════════════════════════════════════════════════
+   RENDER DESKTOP
+════════════════════════════════════════════════════ */
+function claseEstado(row) {
+  const c = (row["CLIENTE"]||"").toUpperCase();
+  if (c.includes("DISPONIBLE"))    return "disponible";
+  if (c.includes("VACIO"))         return "vacio";
+  if (c.includes("MANTENIMIENTO")) return "mantenimiento";
+  return "cargado";
+}
+
+function renderDesktop(data, mostrarOrden) {
+  const cols = columnas.filter(c => c !== ORDEN_COL && c !== HOY_COL);
+  // colgroup
+  const cgMap = { "INTERNO":"col-interno","TRACTOR":"col-tractor","SEMI":"col-semi","CHOFER":"col-chofer","CLIENTE":"col-cliente","ORIGEN":"col-origen","DESTINO":"col-destino","OBSERVACION":"col-observacion" };
+  let cg = cols.map(c => '<col class="' + (cgMap[c]||"") + '">').join("");
+  if (columnas.includes(HOY_COL)) cg += '<col class="col-actualizado">';
+  if (mostrarOrden && columnas.includes(ORDEN_COL)) cg += '<col class="col-orden">';
+  document.getElementById("colgroup").innerHTML = cg;
+  // headers
+  let ths = cols.map(c => '<th data-col="' + c + '">' + c + '</th>').join("");
+  if (columnas.includes(HOY_COL)) ths += '<th data-col="' + HOY_COL + '">✓ HOY</th>';
+  if (mostrarOrden && columnas.includes(ORDEN_COL)) ths += '<th data-col="ORDEN">N°</th>';
+  document.getElementById("thead").innerHTML = "<tr>" + ths + "</tr>";
+  if (!data.length) {
+    document.getElementById("tbody").innerHTML = '<tr><td colspan="' + (cols.length + (columnas.includes(HOY_COL)?1:0) + (mostrarOrden?1:0)) + '" class="empty-state">Sin registros con los filtros aplicados.</td></tr>';
+    document.getElementById("rowCount").textContent = "0 registros";
+    return;
+  }
+  document.getElementById("tbody").innerHTML = data.map(row => {
+    const clase = claseEstado(row);
+    let tds = cols.map(col => '<td data-col="' + col + '">' + (row[col]||"") + '</td>').join("");
+    if (columnas.includes(HOY_COL)) {
+      const v = (row[HOY_COL]||"").toUpperCase().trim();
+      tds += '<td data-col="' + HOY_COL + '" style="text-align:center;font-size:16px;padding:6px 4px;">' + (v === "SI" ? "✅" : "❌") + '</td>';
+    }
+    if (mostrarOrden && columnas.includes(ORDEN_COL)) {
+      const n = parseInt(row[ORDEN_COL]);
+      tds += '<td data-col="ORDEN" class="col-orden"><span class="badge-orden">' + (isNaN(n) ? "—" : n+"°") + '</span></td>';
+    }
+    return "<tr class='" + clase + "'>" + tds + "</tr>";
+  }).join("");
+  document.getElementById("rowCount").textContent = data.length + " registro" + (data.length !== 1 ? "s" : "");
+}
+
+/* ════════════════════════════════════════════════════
+   RENDER MOBILE
+   Columnas visibles: CHOFER, CLIENTE, DESTINO, HOY?
+   Al tocar una fila → abre sheet de detalle completo
+════════════════════════════════════════════════════ */
+function renderMobile(data) {
+  const thead = document.getElementById("m-thead");
+  const tbody = document.getElementById("m-tbody");
+  const cnt   = document.getElementById("m-rowCount");
+
+  thead.innerHTML = '<tr><th class="m-th" style="text-align:left;">Chofer / Interno</th><th class="m-th">Estado</th><th class="m-th">Destino</th>' + (columnas.includes(HOY_COL) ? '<th class="m-th">Hoy</th>' : '') + '</tr>';
+
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="m-empty">Sin registros con los filtros aplicados.</td></tr>';
+    cnt.textContent = "0 registros"; return;
+  }
+
+  const clsRow = { disponible:"m-row-d", vacio:"m-row-v", cargado:"m-row-c", mantenimiento:"m-row-m" };
+  const clsBadge = { disponible:"mb-d", vacio:"mb-v", cargado:"mb-c", mantenimiento:"mb-m" };
+  const lblBadge = { disponible:"Disponible", vacio:"Vacío", cargado:"Cargado", mantenimiento:"Mantenim." };
+
+  tbody.innerHTML = data.map((row, idx) => {
+    const estado = claseEstado(row);
+    const interno = row["INTERNO"] || "";
+    const chofer  = row["CHOFER"]  || "—";
+    const destino = row["DESTINO"] || "—";
+    const hoy     = columnas.includes(HOY_COL) ? ((row[HOY_COL]||"").toUpperCase().trim() === "SI" ? "✅" : "❌") : "";
+    return '<tr class="' + clsRow[estado] + '" onclick="abrirDetalle(' + idx + ')" style="cursor:pointer;">'
+      + '<td class="m-td"><div class="m-td-name">' + chofer + '</div><div class="m-td-sub">' + interno + '</div></td>'
+      + '<td class="m-td" style="text-align:center;"><span class="m-badge ' + clsBadge[estado] + '">' + lblBadge[estado] + '</span></td>'
+      + '<td class="m-td m-td-dest">' + destino + '</td>'
+      + (columnas.includes(HOY_COL) ? '<td class="m-td m-td-today">' + hoy + '</td>' : '')
+      + '</tr>';
+  }).join("");
+
+  cnt.textContent = data.length + " registro" + (data.length !== 1 ? "s" : "");
+}
+
+/* ════════════════════════════════════════════════════
+   DETALLE MOBILE (sheet bottom)
+════════════════════════════════════════════════════ */
+// Guarda la data filtrada actual para indexar en abrirDetalle
+let mDataActual = [];
+
+const _aplicarFiltrosMobile_orig = aplicarFiltrosMobile;
+// Sobreescribimos para guardar copia de datos filtrados
+aplicarFiltrosMobile = function() {
+  let f = datos;
+  Object.keys(mFiltrosActivos).forEach(col => {
+    if (mFiltrosActivos[col]) f = f.filter(d => d[col] === mFiltrosActivos[col]);
+  });
+  mDataActual = f;
+  const n = Object.values(mFiltrosActivos).filter(v => v).length;
+  const info = document.getElementById("m-filtrosInfo");
+  if (info) info.textContent = n > 0 ? n + " filtro" + (n > 1 ? "s" : "") + " activo" + (n > 1 ? "s" : "") : "";
+  renderMobile(f);
+};
+
+function abrirDetalle(idx) {
+  const row = mDataActual[idx];
+  if (!row) return;
+  const estado  = claseEstado(row);
+  const colores = { disponible:["#bbf7d0","#14532d"], vacio:["#fecaca","#7f1d1d"], cargado:["#e2e8f0","#334155"], mantenimiento:["#fde68a","#78350f"] };
+  const etiquetas = { disponible:"Disponible", vacio:"Vacío", cargado:"Cargado", mantenimiento:"En mantenimiento" };
+  const [bg, fg] = colores[estado];
+
+  // Campos a mostrar (excluye ORDEN y HOY_COL de la grilla principal)
+  const camposGrilla = columnas.filter(c => c !== ORDEN_COL && c !== HOY_COL);
+  const grilla = camposGrilla.map(c => {
+    const esFullWidth = c === "OBSERVACION" || c === "CLIENTE";
+    return '<div class="m-detail-field' + (esFullWidth ? " full" : "") + '">'
+      + '<div class="m-detail-field-lbl">' + c + '</div>'
+      + '<div class="m-detail-field-val">' + (row[c]||"—") + '</div>'
+      + '</div>';
+  }).join("");
+
+  const hoy = columnas.includes(HOY_COL)
+    ? '<div class="m-detail-field full"><div class="m-detail-field-lbl">Actualizado hoy</div><div class="m-detail-field-val" style="font-size:18px;">' + ((row[HOY_COL]||"").toUpperCase().trim() === "SI" ? "✅ Sí" : "❌ No") + '</div></div>'
+    : "";
+
+  document.getElementById("mDetailContent").innerHTML =
+    '<div class="m-detail-status" style="background:' + bg + ';color:' + fg + ';">' + etiquetas[estado] + '</div>'
+    + '<div class="m-detail-title">' + (row["CHOFER"]||"Sin nombre") + '</div>'
+    + '<div class="m-detail-sub">' + (row["INTERNO"]||"") + (row["TRACTOR"] ? " · " + row["TRACTOR"] : "") + '</div>'
+    + '<div class="m-detail-grid">' + grilla + hoy + '</div>';
+
+  document.getElementById("mDetailOverlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function cerrarDetalle(e) {
+  if (e && e.target !== document.getElementById("mDetailOverlay")) return;
+  document.getElementById("mDetailOverlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+/* ════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════ */
+obtenerFechaModificacion();
+cargar();
+iniciarRefresh();
+</script>
+</body>
+</html>
